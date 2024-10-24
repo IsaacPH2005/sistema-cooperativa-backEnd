@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bienes_adjudicados', function (Blueprint $table) {
+        Schema::create('principios_texts', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
-            $table->decimal('precio', 10,2);
-            $table->integer('rebaja');
-            $table->text('datos');
-            $table->dateTime('fecha');
-            $table->json('imagenes');
-            $table->boolean('estado')->default(true);
+            $table->text('principios_fundamentales')->nullable();
+            $table->text('principios_cooperativos')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bienes_adjudicados');
+        Schema::dropIfExists('principios_texts');
     }
 };

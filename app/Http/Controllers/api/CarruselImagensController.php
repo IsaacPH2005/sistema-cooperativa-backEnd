@@ -13,8 +13,13 @@ class CarruselImagensController extends Controller
      */
     public function index()
     {
-        $item = carrusel_imagenes::orderBy('id', 'desc')->paginate(10);
-        return response()->json(["mensaje" => "Datos cargados", "datos" => $item], 200);
+        $items = carrusel_imagenes::orderBy('id', 'desc')->paginate(10);
+        // Mapear los items para agregar las URLs de las imágenes y PDFs
+        $items->getCollection()->transform(function ($item) {
+            $item->imagen = asset('img/img_carrusel/' . $item->imagen);
+            return $item;
+        });
+        return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
     }
 
     /**
@@ -23,11 +28,11 @@ class CarruselImagensController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "nombre" => "required",
+            "titulo" => "required",
             "imagen" => "mimes:png,jpg,jpeg"
         ]);
         $item = new carrusel_imagenes();
-        $item->nombre = $request->nombre;
+        $item->titulo = $request->titulo;
         $item->descripcion = $request->descripcion;
         if ($request->file('imagen')) {
             if ($item->imagen) {
@@ -50,13 +55,17 @@ class CarruselImagensController extends Controller
      */
     public function show(string $id)
     {
+        // Buscar el registro por ID
         $item = carrusel_imagenes::find($id);
-        $imagen = asset('img/img_batchs/' . $item->imagen);
-        if ($item) {
-            return response()->json(["mensaje" => "Registro cargado", "datos" => $item, "imagen" => $imagen], 200);
-        } else {
+        // Verificar si el registro existe
+        if (!$item) {
             return response()->json(["mensaje" => "Registro no encontrado"], 404);
         }
+        // Agregar las URLs de la imagen y el PDF
+        $item->imagen = asset('img/img_carrusel/' . $item->imagen);
+
+        // Retornar la respuesta JSON con el registro encontrado
+        return response()->json(["mensaje" => "Registro encontrado", "datos" => $item], 200);
     }
 
     /**
@@ -65,10 +74,11 @@ class CarruselImagensController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            "nombre" => "required",
+            "titulo" => "required",
+            "imagen" => "mimes:png,jpg,jpeg"
         ]);
         $item = carrusel_imagenes::find($id);
-        $item->nombre = $request->nombre;
+        $item->titulo = $request->titulo;
         $item->descripcion = $request->descripcion;
         if ($request->file('imagen')) {
             if ($item->imagen) {
@@ -92,7 +102,7 @@ class CarruselImagensController extends Controller
     public function destroy(string $id)
     {
         $item = carrusel_imagenes::find($id);
-        $item->is_deleted = !$item->is_deleted;
+        $item->estado = !$item->estado;
         if ($item->save()) {
             return response()->json(["mensaje" => "Estado modificado", "datos" => $item], 202);
         } else {
@@ -101,7 +111,7 @@ class CarruselImagensController extends Controller
     }
     public function imagenesActivas()
     {
-        $items = carrusel_imagenes::where('is_deleted', false)->orderBy('id', 'desc')->get();
+        $items = carrusel_imagenes::where('estado', true)->orderBy('id', 'desc')->get();
         $items->transform(function ($item) {
             $imagenPath = 'img/img_carrusel/' . $item->imagen;
             $item->imagen = file_exists($imagenPath) ? asset($imagenPath) : null;

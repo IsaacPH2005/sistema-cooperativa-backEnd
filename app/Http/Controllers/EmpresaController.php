@@ -81,7 +81,7 @@ class EmpresaController extends Controller
             // Actualizar otros campos
             $empresa->mision = $request->mision;
             $empresa->vision = $request->vision;
-            $empresa->historia = $request->historia;
+            $empresa->historia = nl2br($request->historia); // Convierte saltos de línea a <br>
             $empresa->aspecto_legal = $request->aspecto_legal;
             $empresa->save();
 

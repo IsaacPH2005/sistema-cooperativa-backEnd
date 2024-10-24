@@ -7,11 +7,13 @@ use App\Http\Controllers\ContactanosController;
 use App\Http\Controllers\DictamenesAuditoriasController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstadosFinancierosController;
+use App\Http\Controllers\InmueblesController;
 use App\Http\Controllers\MemoriasInstitucionalController;
 use App\Http\Controllers\PaginaBannersController;
 use App\Http\Controllers\PaginasController;
+use App\Http\Controllers\PrincipiosController;
+use App\Http\Controllers\PrincipiosTextController;
 use App\Http\Controllers\ServiciosBasicosController;
-use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\TransferenciasElectronicasController;
 use App\Http\Controllers\VigilanciaController;
 use Illuminate\Http\Request;
@@ -120,6 +122,32 @@ Route::post('/transferencias-electronicas-nuevo', [TransferenciasElectronicasCon
 Route::delete('/transferencias-electronicas/{id}', [TransferenciasElectronicasController ::class, 'destroy']);
 Route::put('/transferencias-electronicas/{id}', [TransferenciasElectronicasController::class, 'update']);
 Route::get('/transferencias-electronicas-activos', [TransferenciasElectronicasController ::class, 'indexActivos']);
+
+//Principios
+Route::get('/principios', [PrincipiosController ::class, 'index']);
+Route::get('/principios/{id}', [PrincipiosController ::class, 'show']);
+Route::post('/principios-nuevo', [PrincipiosController ::class, 'store']);
+Route::delete('/principios/{id}', [PrincipiosController ::class, 'destroy']);
+Route::put('/principios/{id}', [PrincipiosController::class, 'update']);
+Route::get('/principios-activos', [PrincipiosController ::class, 'indexActivos']);
+
+//Principios text
+Route::post('/principios-text', [PrincipiosTextController::class, 'edicionPrincipiosText']);
+Route::get('/principios-text', [PrincipiosTextController::class, 'lecturaitem']);
+
+// Obtener todos los inmuebles
+Route::get('/inmuebles', [InmueblesController::class, 'index']);
+// Obtener un inmueble específico por ID
+Route::get('/inmuebles/{id}', [InmueblesController::class, 'show']);
+// Almacenar un nuevo inmueble
+Route::post('/inmuebles-nuevo', [InmueblesController::class, 'store']);
+// Actualizar un inmueble existente por ID
+Route::put('/inmuebles/{id}', [InmueblesController::class, 'update']);
+// Eliminar un inmueble por ID
+Route::delete('/inmuebles/{id}', [InmueblesController::class, 'destroy']);
+
+Route::get('/inmuebles-activos', [InmueblesController::class, 'indexActivos']);
+
 
 Route::post('/empresa', [EmpresaController::class, 'edicionWebEmpresas']);
 Route::get('/empresa', [EmpresaController::class, 'lecturaEmpresa']);

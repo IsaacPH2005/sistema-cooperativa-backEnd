@@ -27,7 +27,7 @@ class PaginaBannersController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "pagina_id" => 'required|unique:paginas_banners,pagina_id,' . $request->pagina_id,
+            "pagina_id" => 'required|unique:paginas_banners,pagina_id',
             "imagen" => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048'
         ]);
 

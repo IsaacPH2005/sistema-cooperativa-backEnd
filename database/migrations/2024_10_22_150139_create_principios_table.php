@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bienes_adjudicados', function (Blueprint $table) {
+        Schema::create('principios', function (Blueprint $table) {
             $table->id();
+            $table->string('nro_de_principio');
             $table->string('titulo');
-            $table->decimal('precio', 10,2);
-            $table->integer('rebaja');
-            $table->text('datos');
-            $table->dateTime('fecha');
-            $table->json('imagenes');
+            $table->text( 'descripcion')->nullable();
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bienes_adjudicados');
+        Schema::dropIfExists('principios');
     }
 };
