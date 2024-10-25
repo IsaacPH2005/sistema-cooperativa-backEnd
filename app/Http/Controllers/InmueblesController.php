@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\bienes_adjudicados; // Asegúrate de que el modelo esté correctamente nombrado
+use App\Models\bienes_inmuebles;
+use App\Models\Imagenes_Inmuebles;
+use App\Models\ImagenesInmuebles;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InmueblesController extends Controller
 {
@@ -12,19 +16,7 @@ class InmueblesController extends Controller
      */
     public function index()
     {
-        $items = bienes_adjudicados::paginate(10); // Suponiendo que estás paginando
-
-        // Decodificar las imágenes para cada item
-        foreach ($items as $item) {
-            $item->imagenes = json_decode($item->imagenes); // Convertir a array
-            // Generar las URLs completas para cada imagen
-            if ($item->imagenes) {
-                $item->imagenes = array_map(function ($imagen) {
-                    return asset('images/inmuebles/' . $imagen); // Generar URL completa
-                }, $item->imagenes);
-            }
-        }
-
+        $items = bienes_inmuebles::orderBy('id', 'desc')->with("imagenes")->paginate(10); // Suponiendo que estás paginando
         return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
     }
 
@@ -36,128 +28,122 @@ class InmueblesController extends Controller
         $request->validate([
             'titulo' => 'required|string|max:255',
             'precio' => 'required|numeric',
-            'rebaja' => 'required|integer',
+            'rebaja' => 'nullable|integer',
             'datos' => 'required|string',
             'fecha' => 'required|date',
-            'imagenes' => 'required|array',
-            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validar que cada imagen sea válida
+            'imagenes' => 'required|array', // Validate that imagenes is an array
+            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validate each image
         ]);
 
-        $item = new bienes_adjudicados();
-        $item->titulo = $request->titulo;
-        $item->precio = $request->precio;
-        $item->rebaja = $request->rebaja;
-        $item->datos = $request->datos;
-        $item->fecha = $request->fecha;
-        // Guardar imágenes
-        $imagenesPaths = [];
-        foreach ($request->imagenes as $imagen) {
-            // Si existe una imagen anterior, eliminarla (opcional)
-            // Aquí puedes implementar la lógica de eliminación si es necesario
-            // if ($item->imagen) {
-            //     unlink('images/inmuebles/' . $item->imagen);
-            // }
+        try {
+            DB::beginTransaction();
 
-            // Procesar la nueva imagen
-            $nombreImagen = time() . '_' . uniqid() . '.' . $imagen->getClientOriginalExtension(); // Generar un nombre único
-            $imagen->move("images/inmuebles/", $nombreImagen); // Mover la imagen al directorio
+            // Create the bienes_inmuebles record
+            $item = new bienes_inmuebles();
+            $item->titulo = $request->titulo;
+            $item->precio = $request->precio;
+            $item->rebaja = $request->rebaja;
+            $item->datos = $request->datos;
+            $item->fecha = $request->fecha;
+            $item->save();
 
-            $imagenesPaths[] = $nombreImagen; // Almacenar el nombre de la imagen
+            // Loop through the images and save them
+            if ($request->hasFile('imagenes')) {
+                foreach ($request->file('imagenes') as $file) {
+                    // Define the path where the image will be stored
+                    $nombreImagen = time() . '_' . uniqid() . '.png'; // Unique name for the image
+                    $file->move(public_path("images/inmuebles/"), $nombreImagen); // Move the file to the specified directory
+
+                    // Create a new image record
+                    $item2 = new Imagenes_Inmuebles();
+                    $item2->imagen = $nombreImagen; // Save the path to the image
+                    $item2->bienes_inmueble_id = $item->id; // Set the foreign key
+                    $item2->save(); // Save the image record
+                }
+            }
+
+            DB::commit();
+            return response()->json(["mensaje" => "Registro exitoso", "datos" => $item], 201);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json(["mensaje" => "No se pudo realizar el registro: " . $th->getMessage()], 406);
         }
-
-        // Guardar rutas como JSON
-        $item->imagenes = json_encode($imagenesPaths);
-        $item->save();
-
-        return response()->json(["mensaje" => "Registro creado", "datos" => $item], 201);
     }
-
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $item = bienes_adjudicados::find($id); // Obtener un solo registro
+        // Obtener un solo registro junto con las imágenes
+        $item = bienes_inmuebles::with('imagenes')->find($id);
+
         if (!$item) {
             return response()->json(['mensaje' => "No se encontró el registro"], 404);
         }
-    
-        // Decodificar las imágenes para el item
-        $item->imagenes = json_decode($item->imagenes); // Convertir a array
-    
-        // Generar las URLs completas para cada imagen
-        if ($item->imagenes) {
-            $item->imagenes = array_map(function ($imagen) {
-                return asset('images/inmuebles/' . $imagen); // Generar URL completa
-            }, $item->imagenes);
-        }
-    
+
+        // Convertir las imágenes a URLs completas usando asset()
+        $item->imagenes->transform(function ($imagen) {
+            $imagen->imagen = asset("images/inmuebles/" . $imagen->imagen);
+            return $imagen;
+        });
+
         return response()->json(["mensaje" => "Datos cargados", "datos" => $item], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-{
-    $item = bienes_adjudicados::find($id);
-    if (!$item) {
-        return response()->json(['mensaje' => "No se encontró el registro"], 404);
-    }
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'precio' => 'required|numeric',
+            'rebaja' => 'nullable|integer',
+            'datos' => 'required|string',
+            'fecha' => 'required|date',
+            'imagenes' => 'nullable|array', // Validate that imagenes is an array
+            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validate each image
+        ]);
 
-    // Validar los datos entrantes
-    $request->validate([
-        'titulo' => 'sometimes|required|string|max:255',
-        'precio' => 'sometimes|required|numeric',
-        'rebaja' => 'sometimes|required|integer',
-        'datos' => 'sometimes|required|string',
-        'fecha' => 'sometimes|required|date',
-        'imagenes' => 'sometimes|array',
-        'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validar que cada imagen sea válida
-    ]);
+        try {
+            DB::beginTransaction();
+            // Find the bienes_inmuebles record
+            $item = bienes_inmuebles::findOrFail($id);
+            $item->titulo = $request->titulo;
+            $item->precio = $request->precio;
+            $item->rebaja = $request->rebaja;
+            $item->datos = $request->datos;
+            $item->fecha = $request->fecha;
+            $item->save();
 
-    // Actualizar los campos permitidos
-    $item->titulo = $request->input('titulo', $item->titulo);
-    $item->precio = $request->input('precio', $item->precio);
-    $item->rebaja = $request->input('rebaja', $item->rebaja);
-    $item->datos = $request->input('datos', $item->datos);
-    $item->fecha = $request->input('fecha', $item->fecha);
+            // Loop through the images and save them
+            if ($request->hasFile('imagenes')) {
+                foreach ($request->file('imagenes') as $file) {
+                    // Define the path where the image will be stored
+                    $nombreImagen = time() . '_' . uniqid() . '.png'; // Unique name for the image
+                    $file->move(public_path("images/inmuebles/"), $nombreImagen); // Move the file to the specified directory
 
-    // Manejar las imágenes si se proporcionan
-    if ($request->has('imagenes')) {
-        $imagenesPaths = json_decode($item->imagenes, true); // Obtener las imágenes existentes
+                    // Create a new image record
+                    $item2 = new Imagenes_Inmuebles();
+                    $item2->imagen = $nombreImagen; 
+                    $item2->bienes_inmueble_id = $item->id; 
+                    $item2->save(); 
+                }
+            }
 
-        // Subir nuevas imágenes
-        foreach ($request->imagenes as $imagen) {
-            // Generar un nombre único para la imagen
-            $nombreImagen = time() . '_' . uniqid() . '.' . $imagen->getClientOriginalExtension(); // Generar un nombre único
-            $imagen->move("images/inmuebles/", $nombreImagen); // Mover la imagen al directorio
-
-            $imagenesPaths[] = $nombreImagen; // Agregar la nueva ruta al array
+            DB::commit();
+            return response()->json(["mensaje" => "Registro actualizado exitosamente", "datos" => $item], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json(["mensaje" => "No se pudo realizar la actualización: " . $th->getMessage()], 406);
         }
-
-        // Guardar las rutas de las imágenes actualizadas
-        $item->imagenes = json_encode($imagenesPaths);
     }
-
-    // Guardar los cambios en la base de datos
-    $item->save();
-
-    return response()->json(["mensaje" => "Registro actualizado", "datos" => $item], 200);
-}
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $item = bienes_adjudicados::find($id);
+        $item = bienes_inmuebles::find($id);
         if (!$item) {
             return response()->json(['mensaje' => "No se encontró el registro"], 404);
         }
 
-        $item->delete(); // Eliminar el registro
-        return response()->json(["mensaje" => "Registro eliminado exitosamente"], 200);
+        $item->estado = !$item ->estado; 
+        return response()->json(["mensaje" => "Estado modificado", "datos" => $item], 200);
     }
 
     /**
@@ -165,7 +151,40 @@ class InmueblesController extends Controller
      */
     public function indexActivos()
     {
-        $items = bienes_adjudicados::where('estado', true)->get();
+        // Obtener todos los bienes inmuebles con imágenes donde el estado es verdadero
+        $items = bienes_inmuebles::with('imagenes')->where('estado', true)->get();
+    
+        // Transformar las imágenes de cada item
+        $items->transform(function ($item) {
+            $item->imagenes->transform(function ($imagen) {
+                $imagen->imagen = asset("images/inmuebles/" . $imagen->imagen);
+                return $imagen;
+            });
+            return $item;
+        });
+    
         return response()->json(["mensaje" => "Datos activos cargados", "datos" => $items], 200);
     }
+    public function deleteImage($id)
+{
+   
+    try {
+        $image = Imagenes_Inmuebles::findOrFail($id);
+
+        // Obtener la ruta de la imagen para eliminarla del sistema de archivos
+        $imagePath = public_path("images/inmuebles/" . $image->imagen);
+
+        // Eliminar la imagen del sistema de archivos
+        if (file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+
+        // Eliminar la imagen de la base de datos
+        $image->delete();
+
+        return response()->json(["mensaje" => "Imagen eliminada exitosamente"], 200);
+    } catch (\Exception $e) {
+        return response()->json(["mensaje" => "No se pudo eliminar la imagen: " . $e->getMessage()], 500);
+    }
+}
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\ContactanosController;
 use App\Http\Controllers\DictamenesAuditoriasController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstadosFinancierosController;
+use App\Http\Controllers\ImagensInmueblesController;
 use App\Http\Controllers\InmueblesController;
 use App\Http\Controllers\MemoriasInstitucionalController;
 use App\Http\Controllers\PaginaBannersController;
@@ -145,8 +146,11 @@ Route::post('/inmuebles-nuevo', [InmueblesController::class, 'store']);
 Route::put('/inmuebles/{id}', [InmueblesController::class, 'update']);
 // Eliminar un inmueble por ID
 Route::delete('/inmuebles/{id}', [InmueblesController::class, 'destroy']);
-
+Route::delete('/img-inmuebles/{id}', [InmueblesController::class, 'deleteImage']);
 Route::get('/inmuebles-activos', [InmueblesController::class, 'indexActivos']);
+
+Route::get('/img-inmuebles', [ImagensInmueblesController::class, 'index']);
+Route::post('/img-inmuebles-nuevo', [ImagensInmueblesController::class, 'store']);
 
 
 Route::post('/empresa', [EmpresaController::class, 'edicionWebEmpresas']);
