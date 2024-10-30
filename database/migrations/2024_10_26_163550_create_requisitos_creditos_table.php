@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comunicados', function (Blueprint $table) {
+        Schema::create('requisitos_creditos', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo')->nullable();
-            $table->text('descripcion')->nullable();
-            $table->string('imagen');
-            $table->text('url')->nullable();
-            $table->boolean('estado')->default(true);
+            $table->foreignId('credito_id')->constrained('creditos')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('requisitos');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comunicados');
+        Schema::dropIfExists('requisitos_creditos');
     }
 };

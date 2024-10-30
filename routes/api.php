@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\AdministracionController;
+use App\Http\Controllers\AgenciasController;
 use App\Http\Controllers\api\CarruselImagensController;
 use App\Http\Controllers\CoeficienteAdecuacionPatrimonialController;
+use App\Http\Controllers\ComunicadosController;
 use App\Http\Controllers\ContactanosController;
+use App\Http\Controllers\CreditosController;
 use App\Http\Controllers\DictamenesAuditoriasController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstadosFinancierosController;
@@ -14,9 +17,12 @@ use App\Http\Controllers\PaginaBannersController;
 use App\Http\Controllers\PaginasController;
 use App\Http\Controllers\PrincipiosController;
 use App\Http\Controllers\PrincipiosTextController;
+use App\Http\Controllers\ResponsabilidadSocialController;
 use App\Http\Controllers\ServiciosBasicosController;
 use App\Http\Controllers\TransferenciasElectronicasController;
 use App\Http\Controllers\VigilanciaController;
+use App\Models\EducacionFinancieras;
+use App\Models\LicitacionPublicas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -148,10 +154,56 @@ Route::put('/inmuebles/{id}', [InmueblesController::class, 'update']);
 Route::delete('/inmuebles/{id}', [InmueblesController::class, 'destroy']);
 Route::delete('/img-inmuebles/{id}', [InmueblesController::class, 'deleteImage']);
 Route::get('/inmuebles-activos', [InmueblesController::class, 'indexActivos']);
-
+// Route::get('/inmuebles
 Route::get('/img-inmuebles', [ImagensInmueblesController::class, 'index']);
 Route::post('/img-inmuebles-nuevo', [ImagensInmueblesController::class, 'store']);
 
+//Agenecias
+Route::get('/agencias', [AgenciasController::class, 'index']);
+Route::post('/agencias-nuevo', [AgenciasController::class, 'store']);
+Route::put('/agencias/{id}', [AgenciasController::class, 'update']);
+Route::get('/agencias/{id}', [AgenciasController::class, 'show']);
+Route::delete('/agencias/{id}', [AgenciasController::class, 'destroy']);
+Route::get('/agencias-activos', [AgenciasController::class, 'indexActivos']);
+
+//Creditos
+Route::get('/creditos', [CreditosController::class, 'index']);
+Route::post('/creditos-nuevo', [CreditosController::class,'store']);
+Route::put('/creditos/{id}', [CreditosController::class, 'update']);
+Route::get('/creditos/{id}', [CreditosController::class,'show']);
+Route::delete('/creditos/{id}', [CreditosController::class, 'destroy']);
+Route::get('/creditos-activos', [CreditosController::class, 'indexActivos']);
+
+//Comunicados
+Route::get('/comunicados', [ComunicadosController::class, 'index']);
+Route::post('/comunicados-nuevo', [ComunicadosController::class,'store']);
+Route::put('/comunicados/{id}', [ComunicadosController::class, 'update']);
+Route::get('/comunicados/{id}', [ComunicadosController::class,'show']);
+Route::delete('/comunicados/{id}', [ComunicadosController::class, 'destroy']);
+Route::get('/comunicados-activos', [ComunicadosController::class, 'indexActivos']);
+//ResponsabilidadSocialController
+Route::get('/responsabilidad-social', [ResponsabilidadSocialController::class, 'index']);
+Route::post('/responsabilidad-social-nuevo', [ResponsabilidadSocialController::class,'store']);
+Route::put('/responsabilidad-social/{id}', [ResponsabilidadSocialController::class, 'update']);
+Route::get('/responsabilidad-social/{id}', [ResponsabilidadSocialController::class,'show']);
+Route::delete('/responsabilidad-social/{id}', [ResponsabilidadSocialController::class, 'destroy']);
+Route::get('/responsabilidad-social-activos', [ResponsabilidadSocialController::class, 'indexActivos']);
+
+//LicitacionPublicas
+Route::get('/licitacion-publica', [LicitacionPublicas::class, 'index']);
+Route::post('/licitacion-publica-nuevo', [LicitacionPublicas::class,'store']);
+Route::put('/licitacion-publica/{id}', [LicitacionPublicas::class, 'update']);
+Route::get('/licitacion-publica/{id}', [LicitacionPublicas::class,'show']);
+Route::delete('/licitacion-publica/{id}', [LicitacionPublicas::class, 'destroy']);
+Route::get('/licitacion-publica-activos', [LicitacionPublicas::class, 'indexActivos']);
+
+//ResponsabilidadSocialController
+Route::get('/educacion-financiera', [EducacionFinancieras::class, 'index']);
+Route::post('/educacion-financiera-nuevo', [EducacionFinancieras::class,'store']);
+Route::put('/educacion-financiera/{id}', [EducacionFinancieras::class, 'update']);
+Route::get('/educacion-financiera/{id}', [EducacionFinancieras::class,'show']);
+Route::delete('/educacion-financiera/{id}', [EducacionFinancieras::class, 'destroy']);
+Route::get('/educacion-financiera-activos', [EducacionFinancieras::class, 'indexActivos']);
 
 Route::post('/empresa', [EmpresaController::class, 'edicionWebEmpresas']);
 Route::get('/empresa', [EmpresaController::class, 'lecturaEmpresa']);

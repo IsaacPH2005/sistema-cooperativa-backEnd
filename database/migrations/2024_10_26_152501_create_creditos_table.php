@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comunicados', function (Blueprint $table) {
+        Schema::create('creditos', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo')->nullable();
+            $table->string('nombre');
             $table->text('descripcion')->nullable();
-            $table->string('imagen');
-            $table->text('url')->nullable();
+            $table->string('imagen')->nullable();
+            $table->string('titulo')->nullable();
+            $table->string('sub_titulo')->nullable();
+            $table->string('banner_imagen')->nullable();
             $table->boolean('estado')->default(true);
+            $table->string('cantidad')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comunicados');
+        Schema::dropIfExists('creditos');
     }
 };

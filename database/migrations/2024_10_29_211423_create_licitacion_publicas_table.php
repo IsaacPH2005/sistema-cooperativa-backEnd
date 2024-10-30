@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comunicados', function (Blueprint $table) {
+        Schema::create('licitacion_publicas', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo')->nullable();
-            $table->text('descripcion')->nullable();
-            $table->string('imagen');
-            $table->text('url')->nullable();
+            $table->string('nombre');
+            $table->string('pdf');
+            $table->string('imagen_pdf')->nullable();
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comunicados');
+        Schema::dropIfExists('licitacion_publicas');
     }
 };

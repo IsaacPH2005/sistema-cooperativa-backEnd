@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comunicados', function (Blueprint $table) {
+        Schema::create('responsabilidad_socials', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo')->nullable();
-            $table->text('descripcion')->nullable();
-            $table->string('imagen');
-            $table->text('url')->nullable();
+            $table->string( 'titulo');
+            $table->string( 'subtitulo');
+            $table->string( 'pdf_1');
+            $table->string( 'pdf_2');
+            $table->string( 'imagen_pdf')->nullable();
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comunicados');
+        Schema::dropIfExists('responsabilidad_socials');
     }
 };
