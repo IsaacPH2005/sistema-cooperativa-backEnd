@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('educacion_financieras', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('imagen_pdf');
+            $table->string('imagen_pdf')->nullable();
             $table->string('pdf');
             $table->boolean('estado')->default(true);
             $table->timestamps();

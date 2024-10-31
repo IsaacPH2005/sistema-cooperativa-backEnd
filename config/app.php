@@ -170,6 +170,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Biscolab\ReCaptcha\ReCaptchaServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -187,6 +189,7 @@ return [
         // 'Example' => App\Facades\Example::class,
         'ReCaptcha' => Biscolab\ReCaptcha\Facades\ReCaptcha::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class
     ])->toArray(),
 
 ];

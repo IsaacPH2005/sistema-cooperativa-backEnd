@@ -13,6 +13,12 @@ class ResponsabilidadSocialController extends Controller
     public function index()
     {
         $items = ResponsabilidadSocial::orderBy('id', 'desc')->paginate(10);
+        // Mapear los items para agregar las URLs de las imágenes y PDFs
+        $items->getCollection()->transform(function ($item) {
+            $item->imagen_pdf = asset('images/responsabilidad_sociales/' . $item->imagen_pdf);
+            $item->pdf = asset('pdfs/responsabilidad_sociales/' . $item->pdf);
+            return $item;
+        });
         return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
     }
 
@@ -24,8 +30,8 @@ class ResponsabilidadSocialController extends Controller
         $request->validate([
             'titulo' => 'required',
             'subtitulo' => 'required',
-            "pdf_1" => 'required|mimes:pdf|max:10240',
-            "pdf_2" => 'required|mimes:pdf|max:10240',
+            "pdf_1" => 'required|mimes:pdf',
+            "pdf_2" => 'required|mimes:pdf',
             "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         $item = new ResponsabilidadSocial();
@@ -56,13 +62,13 @@ class ResponsabilidadSocialController extends Controller
             $item->pdf_1 = $nombrePdf;
         }
         // Manejar la actualización del PDF
-        if ($request->hasFile('pdf')) {
+        if ($request->hasFile('pdf_2')) {
             // Eliminar el PDF anterior si existe
             if ($item->pdf_2) {
                 unlink('pdfs/responsabilidad_sociales/' . $item->pdf_2);
             }
             // Subir el nuevo PDF
-            $pdf = $request->file('pdf');
+            $pdf = $request->file('pdf_2');
             $nombrePdf = time() . '.' . $pdf->getClientOriginalExtension();
             $pdf->move("pdfs/responsabilidad_sociales/", $nombrePdf);
             $item->pdf_2 = $nombrePdf;
@@ -105,18 +111,18 @@ class ResponsabilidadSocialController extends Controller
             "pdf_2" => 'nullable|mimes:pdf|max:10240',
             "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
-    
+
         // Buscar el registro por ID
         $item = ResponsabilidadSocial::find($id);
         // Verificar si el registro existe
         if (!$item) {
             return response()->json(['mensaje' => "No se encontró el registro"], 404);
         }
-    
+
         // Actualizar los campos básicos
         $item->titulo = $request->input('titulo');
         $item->subtitulo = $request->input('subtitulo');
-    
+
         // Manejar la actualización de la imagen
         if ($request->hasFile('imagen_pdf')) {
             // Eliminar la imagen anterior si existe
@@ -129,7 +135,7 @@ class ResponsabilidadSocialController extends Controller
             $imagen->move("images/responsabilidad_sociales/", $nombreImagen);
             $item->imagen_pdf = $nombreImagen;
         }
-    
+
         // Manejar la actualización del PDF 1
         if ($request->hasFile('pdf_1')) {
             // Eliminar el PDF anterior si existe
@@ -142,7 +148,7 @@ class ResponsabilidadSocialController extends Controller
             $pdf_1->move("pdfs/responsabilidad_sociales/", $nombrePdf1);
             $item->pdf_1 = $nombrePdf1;
         }
-    
+
         // Manejar la actualización del PDF 2
         if ($request->hasFile('pdf_2')) {
             // Eliminar el PDF anterior si existe
@@ -155,10 +161,10 @@ class ResponsabilidadSocialController extends Controller
             $pdf_2->move("pdfs/responsabilidad_sociales/", $nombrePdf2);
             $item->pdf_2 = $nombrePdf2;
         }
-    
+
         // Guardar los cambios en la base de datos
         $item->save();
-    
+
         // Retornar la respuesta JSON con la información actualizada
         return response()->json(['mensaje' => "Registro actualizado exitosamente", "datos" => $item], 200);
     }

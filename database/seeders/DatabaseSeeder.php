@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(class: [PaginasSeeder::class]);
         $this->call(class: [EmpresaSeeder::class]);
         $this->call(class: [PrincipiosTextSeeder::class]);
+        $this->call(class: [SuperAdminSeeder::class]);
     }
 }
