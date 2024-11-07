@@ -28,6 +28,26 @@ class EmpresaController extends Controller
             return response()->json("existe un error:" . $e->getMessage(), 500);
         }
     }
+    public function lecturaEmpresa2()
+    {
+        try {
+            $empresa = Empresa::findOrFail(1);
+            // Agregar las URLs de las imágenes
+            if ($empresa->imagen) {
+                $empresa->imagen = asset('images/empresa/' . $empresa->imagen);
+            }
+            if ($empresa->asfi_imagen) {
+                $empresa->asfi_imagen = asset('images/empresa/' . $empresa->asfi_imagen);
+            }
+            if ($empresa->logo) {
+                $empresa->logo = asset('images/empresa/' . $empresa->logo);
+            }
+            return response()->json($empresa, 200);
+        } catch (\Throwable $e) {
+            // Registrar el error para depuración
+            return response()->json("existe un error:" . $e->getMessage(), 500);
+        }
+    }
 
     public function edicionWebEmpresas(Request $request)
     {
@@ -43,6 +63,11 @@ class EmpresaController extends Controller
                 "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 "asfi_imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 "logo" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
+                "direccion" => 'nullable',
+                "celular" => 'nullable',
+                "email" => 'nullable|email',
+                "latitud" => 'nullable',
+                "longitud" => 'nullable',
             ]);
 
             if ($validator->fails()) {
@@ -83,6 +108,11 @@ class EmpresaController extends Controller
             $empresa->vision = $request->vision;
             $empresa->historia = nl2br($request->historia); // Convierte saltos de línea a <br>
             $empresa->aspecto_legal = $request->aspecto_legal;
+            $empresa->direccion = $request->direccion;
+            $empresa->celular = $request->celular;
+            $empresa->email = $request->email;
+            $empresa->latitud = $request->latitud;
+            $empresa->longitud = $request->longitud;
             $empresa->save();
 
             return response()->json($empresa, 200); // Retorna la empresa actualizada

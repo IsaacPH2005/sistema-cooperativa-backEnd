@@ -27,7 +27,11 @@ Además de formar nuevos líderes entre sus mismos socios quienes se encargan de
             "imagen" => '',
             "asfi_imagen" => '',
             "logo" => '',
+            "direccion" => 'Direccion de la cooperativa central',
+            "celular" => '00000000',
+            "email" => 'cooperativaLoyola@ejemplo.com',
+            "latitud" => -17.39411435373686, // Cambia a null si es opcional
+            "longitud" => -66.15164741349261, // Cambia a null si es opcional
         ]);
     }
 }
- 

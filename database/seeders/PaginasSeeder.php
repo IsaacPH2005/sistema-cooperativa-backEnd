@@ -73,6 +73,23 @@ class PaginasSeeder extends Seeder
         DB::table('paginas')->insert([
             'nombre' => 'Responsabilidad Social',
         ]);
+        DB::table('paginas')->insert([
+            'nombre' => 'Contactanos',
+        ]);
+        DB::table('paginas')->insert([
+            'nombre' => 'agencias',
+        ]);
+        DB::table('paginas')->insert([
+            'nombre' => 'Cooperativa de Ahorro y Crédito',
+        ]);
+        DB::table('paginas')->insert([
+            'nombre' => 'Cuenta de ahorro',
+        ]);
+        DB::table('paginas')->insert([
+            'nombre' => 'Punto de reclamo',
+        ]);
+        DB::table('paginas')->insert([
+            'nombre' => 'Quiero ser socio',
+        ]);
     }
 }
-

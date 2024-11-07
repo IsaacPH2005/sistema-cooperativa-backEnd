@@ -20,6 +20,11 @@ return new class extends Migration
             $table->text("imagen");
             $table->text("asfi_imagen");
             $table->text('logo');
+            $table->string('celular')->nullable();
+            $table->string('direccion')->nullable();
+            $table->string('email')->nullable();
+            $table->decimal('latitud', 10, 8)->nullable(); // Permitir nulos
+            $table->decimal('longitud', 10, 8)->nullable(); // Permitir nulos
             $table->timestamps();
         });
     }

@@ -22,5 +22,9 @@ class DatabaseSeeder extends Seeder
         $this->call(class: [EmpresaSeeder::class]);
         $this->call(class: [PrincipiosTextSeeder::class]);
         $this->call(class: [SuperAdminSeeder::class]);
+        $this->call(class: [PuntoDeReclamoSeeder::class]);
+        $this->call(class: [IndicadoresFinancierosSeeder::class]);
+        $this->call(class: [PrincipiosSeeder::class]);   
+        $this->call(class: [PrincipiosTextsSeeder::class]);
     }
 }

@@ -139,6 +139,26 @@ class CreditosController extends Controller
         // Devolver el item con la URL de la imagen
         return response()->json(["mensaje" => "Datos cargados", "datos" => $item], 200);
     }
+    public function show2(string $id)
+    {
+        // Buscar el crédito por su ID
+        $item = creditos::with('caracteristicas', 'requisitos')->find($id);
+
+        // Verificar si el item existe
+        if (!$item) {
+            return response()->json(["mensaje" => "item no encontrada"], 404);
+        }
+
+        // Definir la URL de la imagen predeterminada
+        $defaultImage = asset('images/creditos/img_default.jpg'); // Cambia la ruta según tu estructura de archivos
+
+        // Asignar la imagen si existe, de lo contrario, usar la imagen predeterminada
+        $item->imagen = $item->imagen ? asset('images/creditos/' . $item->imagen) : $defaultImage;
+        $item->banner_imagen = $item->banner_imagen ? asset('images/creditos/' . $item->banner_imagen) : $defaultImage;
+
+        // Devolver el item con la URL de la imagen
+        return response()->json(["mensaje" => "Datos cargados", "datos" => $item], 200);
+    }
 
     /**
      * Update the specified resource in storage.

@@ -6,15 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
+        // Verificar si la tabla 'agencias' existe para evitar problemas de clave foránea
+      /*   if (!Schema::hasTable('agencias')) {
+            throw new Exception("La tabla 'agencias' no existe. Por favor, créala primero.");
+        } */
+        
         if (!Schema::hasTable('horarios')) {
             Schema::create('horarios', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('agencia_id')->constrained('agencias')->onDelete('cascade')->onUpdate('cascade');
+                $table->foreignId('agencia_id')->constrained('agencias')->onDelete('cascade');
                 $table->string('dias');
                 $table->string('horas')->nullable();
                 $table->timestamps();
@@ -22,9 +24,6 @@ return new class extends Migration
         }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('horarios');

@@ -37,7 +37,7 @@ class MemoriasInstitucionalController extends Controller
     {
         $request->validate([
             "titulo" => 'required|string|max:255',
-            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg',
             "pdf" => 'required|mimes:pdf|max:10240',
             "fecha" => 'nullable|date',
             "descripcion" => 'nullable|string',
@@ -96,7 +96,7 @@ class MemoriasInstitucionalController extends Controller
     // Validar los datos de entrada
     $request->validate([
         "titulo" => 'required|string|max:255',
-        "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg',
         "pdf" => 'nullable|mimes:pdf|max:10240',
         "descripcion" => 'nullable|string',
     ]);

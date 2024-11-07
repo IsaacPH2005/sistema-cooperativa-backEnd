@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('medio_de_envio_de_respuesta')->nullable();
             $table->string('telefono_fijo')->nullable();
             $table->string('recibir_numero_de_reclamo')->nullable();
+            $table->string('estado')->default(false);
             $table->timestamps();
         });
     }
