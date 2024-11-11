@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
@@ -13,24 +12,69 @@ class SuperAdminSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-{
-    // Crear el rol de super_admin si no existe
-    $role = Role::firstOrCreate(['name' => 'super_admin']);
+    {
+        // Crear los roles si no existen
+        $roleSuperAdmin = Role::firstOrCreate(['name' => 'Super Administrador']);
+        $roleUsuario = Role::firstOrCreate(['name' => 'usuario']);
 
-    // Verificar si el usuario ya existe
-    $user = User::where('email', 'cooperativaloyola2024@mail.com')->first();
+        // Definir los usuarios a crear
+        $users = [
+            [
+                'nombre' => 'Admin',
+                'apellido' => 'User ',
+                'email' => 'user1@mail.com',
+                'password' => 'user1',
+                'role' => $roleSuperAdmin,
+                'is_active' => 0,
+            ],
+            [
+                'nombre' => 'Usuario 1',
+                'apellido' => 'Apellido',
+                'email' => 'usuario1@mail.com',
+                'password' => 'user2',
+                'role' => $roleUsuario,
+                'is_active' => 0,
+            ],
+            [
+                'nombre' => 'Usuario 2',
+                'apellido' => 'Apellido',
+                'email' => 'usuario2@mail.com',
+                'password' => 'user2',
+                'role' => $roleUsuario,
+                'is_active' => 0,
+            ],
+            [
+                'nombre' => 'Usuario 3',
+                'apellido' => 'Apellido',
+                'email' => 'usuario3@mail.com',
+                'password' => 'user3',
+                'role' => $roleUsuario,
+                'is_active' => 0,
+            ],
+            [
+                'nombre' => 'Usuario 4',
+                'apellido' => 'Apellido',
+                'email' => 'usuario4@mail.com',
+                'password' => 'user4',
+                'role' => $roleUsuario,
+                'is_active' => 0,
+            ],
+        ];
 
-    if (!$user) {
-        // Crear un nuevo usuario
-        $user = User::create([
-            'nombre' => 'Admin', // Cambia esto según sea necesario
-            'apellido' => 'User', // Cambia esto según sea necesario
-            'email' => 'cooperativaloyola2024@mail.com', // Cambia esto según sea necesario
-            'password' => bcrypt('password'), // Cambia esto según sea necesario
-            'is_active' => true,
-        ]);
-        // Asignar el rol al usuario
-        $user->assignRole($role);
+        // Crear usuarios y asignar roles
+        foreach ($users as $userData) {
+            $user = User::firstOrCreate(
+                ['email' => $userData['email']],
+                [
+                    'nombre' => $userData['nombre'],
+                    'apellido' => $userData['apellido'],
+                    'password' => bcrypt($userData['password']),
+                    'is_active' => $userData['is_active'],
+                ]
+            );
+
+            // Asignar el rol al usuario
+            $user->assignRole($userData['role']);
+        }
     }
-}
 }

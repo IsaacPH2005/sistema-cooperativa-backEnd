@@ -13,22 +13,38 @@ class AuthController extends Controller
             "password" => "required|string"
         ]);
     
+        // Intentar autenticar al usuario
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
     
-        // Solo cargar el usuario sin datos adicionales
-        $usuario = Auth::user();
+        // Obtener el usuario autenticado
+        $usuario = Auth::user()->load('roles');
+    
+        // Cambiar el estado is_active a 1
+        $usuario->is_active = 1;
+        $usuario->save();
+    
+        // Crear el token de acceso
         $token = $usuario->createToken('auth_token')->plainTextToken;
+    
         return response()->json([
             'message' => 'Sesión iniciada',
             'access_token' => $token,
-            "user" => $usuario, // Aquí se devuelve solo el usuario sin datos adicionales
+            "user" => $usuario,
             'token_type' => 'Bearer'
         ], 200);
     }
     public function logout() {
-        Auth::user()->tokens()->delete();
-        return response()->json(["mensaje" => "Sesion finalizada"], 200);
+        $usuario = Auth::user();
+    
+        // Cambiar el estado is_active a 0
+        $usuario->is_active = 0;
+        $usuario->save();
+    
+        // Eliminar todos los tokens del usuario
+        $usuario->tokens()->delete();
+    
+        return response()->json(["mensaje" => "Sesión finalizada"], 200);
     }
 }

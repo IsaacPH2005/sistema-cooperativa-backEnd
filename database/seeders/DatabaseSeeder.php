@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(class: [IndicadoresFinancierosSeeder::class]);
         $this->call(class: [PrincipiosSeeder::class]);   
         $this->call(class: [PrincipiosTextsSeeder::class]);
+        $this->call(class: [CuentaDeAhorroSeeder::class]);
     }
 }
