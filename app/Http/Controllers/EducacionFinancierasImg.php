@@ -13,6 +13,11 @@ class EducacionFinancierasImg extends Controller
     public function index()
     {
         $items = EducacionFinancierasImagenes::orderBy('id', 'desc')->paginate(10);
+        // Mapear los items para agregar las URLs de las imágenes y PDFs
+        $items->getCollection()->transform(function ($item) {
+            $item->imagen = asset('images/educacion_financieras_imagenes/' . $item->imagen);
+            return $item;
+        });
         return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
     }
 
@@ -52,7 +57,7 @@ class EducacionFinancierasImg extends Controller
             return response()->json(['mensaje' => "No se encontró el registro"], 404);
         }
         // Agregar las URLs de la imagen y el PDF
-        $item->imagen = asset('images/educacion_financieras_imagenes/' . $item->imagen_pdf);
+        $item->imagen = asset('images/educacion_financieras_imagenes/' . $item->imagen);
         // Retornar la respuesta JSON con la información del registro
         return response()->json(["mensaje" => "Registro cargado", "datos" => $item], 200);
     }

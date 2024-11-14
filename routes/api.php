@@ -6,6 +6,9 @@ use App\Http\Controllers\api\CarruselImagensController;
 use App\Http\Controllers\api\CuentaDeAhorro\CaracteristicasController;
 use App\Http\Controllers\api\CuentaDeAhorro\CuentadeAhorroController;
 use App\Http\Controllers\api\CuentaDeAhorro\RequisitosController;
+use App\Http\Controllers\api\DPF\BeneficiosDpfController;
+use App\Http\Controllers\api\DPF\CaracteristicasDpfController;
+use App\Http\Controllers\api\DPF\RequisitosDpfController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CoeficienteAdecuacionPatrimonialController;
 use App\Http\Controllers\ComunicadosController;
@@ -18,6 +21,7 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstadosFinancierosController;
 use App\Http\Controllers\ImagensInmueblesController;
 use App\Http\Controllers\IndicadoresFinancierosController;
+use App\Http\Controllers\InfoSerSocioController;
 use App\Http\Controllers\InmueblesController;
 use App\Http\Controllers\LicitacionPublicasController;
 use App\Http\Controllers\MemoriasInstitucionalController;
@@ -27,13 +31,17 @@ use App\Http\Controllers\PrincipiosController;
 use App\Http\Controllers\PrincipiosTextController;
 use App\Http\Controllers\PuntoDeReclamoController;
 use App\Http\Controllers\RedesSocialesController;
+use App\Http\Controllers\RequerimientosSerSocioController;
 use App\Http\Controllers\ResponsabilidadSocialController;
+use App\Http\Controllers\SeguridadTipsController;
 use App\Http\Controllers\ServiciosBasicosController;
 use App\Http\Controllers\TabladpfController;
 use App\Http\Controllers\TestimoniosController;
 use App\Http\Controllers\TransferenciasElectronicasController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VideoEducacionFinancieraController;
 use App\Http\Controllers\VigilanciaController;
+use App\Models\CaracteristicasDpf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -227,7 +235,7 @@ Route::group(["middleware" => "auth:sanctum"], function () {
   Route::put('caracteristicas-cuenta-de-ahorro/{id}', [CaracteristicasController::class, 'update']);
   Route::delete('caracteristicas-cuenta-de-ahorro/{id}', [CaracteristicasController::class, 'destroy']);
 
-  
+
   // ************* requisitos cuenta de ahorro **********
   Route::get('requisitos-cuenta-de-ahorro', [RequisitosController::class, 'index']);
   Route::post('requisitos-cuenta-de-ahorro-nuevo', [RequisitosController::class, 'store']);
@@ -237,8 +245,48 @@ Route::group(["middleware" => "auth:sanctum"], function () {
 
   // Cuenta de ahorro
   Route::get('/cuenta-de-ahorro', [CuentadeAhorroController::class, 'index']);
-
   Route::post('/cuenta-de-ahorro/edicion', [CuentadeAhorroController::class, 'update']);
+
+
+  // ************* caracteristicas dpf **********
+  Route::get('caracteristicas-dpf', [CaracteristicasDpfController::class, 'index']);
+  Route::post('caracteristicas-dpf-nuevo', [CaracteristicasDpfController::class, 'store']);
+  Route::get('caracteristicas-dpf/{id}', [CaracteristicasDpfController::class, 'show']);
+  Route::put('caracteristicas-dpf/{id}', [CaracteristicasDpfController::class, 'update']);
+  Route::delete('caracteristicas-dpf/{id}', [CaracteristicasDpfController::class, 'destroy']);
+  // ************* beneficios dpf **********
+  Route::get('beneficios-dpf', [BeneficiosDpfController::class, 'index']);
+  Route::post('beneficios-dpf-nuevo', [BeneficiosDpfController::class, 'store']);
+  Route::get('beneficios-dpf/{id}', [BeneficiosDpfController::class, 'show']);
+  Route::put('beneficios-dpf/{id}', [BeneficiosDpfController::class, 'update']);
+  Route::delete('beneficios-dpf/{id}', [BeneficiosDpfController::class, 'destroy']);
+  // ************* requisitos dpf **********
+  Route::get('requisitos-dpf', [RequisitosDpfController::class, 'index']);
+  Route::post('requisitos-dpf-nuevo', [RequisitosDpfController::class, 'store']);
+  Route::get('requisitos-dpf/{id}', [RequisitosDpfController::class, 'show']);
+  Route::put('requisitos-dpf/{id}', [RequisitosDpfController::class, 'update']);
+  Route::delete('requisitos-dpf/{id}', [RequisitosDpfController::class, 'destroy']);
+  // ************* recomendaciones de seguridad  **********
+  Route::get('recomendaciones-de-seguridad', [SeguridadTipsController::class, 'index']);
+  Route::post('recomendaciones-de-seguridad-nuevo', [SeguridadTipsController::class, 'store']);
+  Route::get('recomendaciones-de-seguridad/{id}', [SeguridadTipsController::class, 'show']);
+  Route::put('recomendaciones-de-seguridad/{id}', [SeguridadTipsController::class, 'update']);
+  Route::delete('recomendaciones-de-seguridad/{id}', [SeguridadTipsController::class, 'destroy']);
+  // *************  educacion financiera videos  **********
+  Route::get('educacion-financiera-video', [VideoEducacionFinancieraController::class, 'index']);
+  Route::post('educacion-financiera-video-nuevo', [VideoEducacionFinancieraController::class, 'store']);
+  Route::get('educacion-financiera-video/{id}', [VideoEducacionFinancieraController::class, 'show']);
+  Route::put('educacion-financiera-video/{id}', [VideoEducacionFinancieraController::class, 'update']);
+  Route::delete('educacion-financiera-video/{id}', [VideoEducacionFinancieraController::class, 'destroy']);
+  // *************  info ser socio  **********
+  Route::get('info-ser-socio', [InfoSerSocioController::class, 'index']);
+  Route::post('info-ser-socio-nuevo', [InfoSerSocioController::class, 'actualizarDatos']);
+    // *************  requerimientos de ser socio  **********
+    Route::get('requerimientos-de-ser-socios', [RequerimientosSerSocioController::class, 'index']);
+    Route::post('requerimientos-de-ser-socios-nuevo', [RequerimientosSerSocioController::class, 'store']);
+    Route::get('requerimientos-de-ser-socios/{id}', [RequerimientosSerSocioController::class, 'show']);
+    Route::put('requerimientos-de-ser-socios/{id}', [RequerimientosSerSocioController::class, 'update']);
+    Route::delete('requerimientos-de-ser-socios/{id}', [RequerimientosSerSocioController::class, 'destroy']);
 });
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -295,6 +343,22 @@ Route::get('/empresa-activa', [EmpresaController::class, 'lecturaEmpresa']);
 Route::get('/caracteristicas-cuenta-de-ahorro-activos', [CaracteristicasController::class, 'indexActivos']);
 Route::get('/requisitos-cuenta-de-ahorro-activos', [RequisitosController::class, 'indexActivos']);
 
+//dpf Caracterisiticas-activas
+Route::get('/caracteristicas-dpf-activos', [CaracteristicasDpfController::class, 'indexActivos']);
+
+//dpf Beneficios-activas
+Route::get('/beneficios-dpf-activos', [BeneficiosDpfController::class, 'indexActivos']);
+
+//dpf Requisitos-activas
+Route::get('/requisitos-dpf-activos', [RequisitosDpfController::class, 'indexActivos']);
+//recomendaciones de reguridad
+Route::get('/recomendaciones-de-seguridad-activos', [SeguridadTipsController::class, 'indexActivos']);
+//educacion financiera videos
+Route::get('/educacion-financiera-video-activos', [VideoEducacionFinancieraController::class, 'indexActivos']);
+//info ser socio activo
+Route::get('info-ser-socio-activo', [InfoSerSocioController::class, 'indexActivo']);
+// requerimientos de ser socio activos
+Route::get('requerimientos-de-ser-socios-activos', [RequerimientosSerSocioController::class, 'indexActivos']);
 Route::get('/principios-text', [PrincipiosTextController::class, 'lecturaitem']);
 
 // Redes Sociales

@@ -27,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(class: [PrincipiosSeeder::class]);   
         $this->call(class: [PrincipiosTextsSeeder::class]);
         $this->call(class: [CuentaDeAhorroSeeder::class]);
+        $this->call(class: [InfoSerSocioSeeder::class]);
     }
 }
