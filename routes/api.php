@@ -15,6 +15,7 @@ use App\Http\Controllers\ComunicadosController;
 use App\Http\Controllers\ContactanosController;
 use App\Http\Controllers\CreditosController;
 use App\Http\Controllers\DictamenesAuditoriasController;
+use App\Http\Controllers\DpfCardController;
 use App\Http\Controllers\EducacionFinancieraController;
 use App\Http\Controllers\EducacionFinancierasImg;
 use App\Http\Controllers\EmpresaController;
@@ -39,6 +40,7 @@ use App\Http\Controllers\TabladpfController;
 use App\Http\Controllers\TestimoniosController;
 use App\Http\Controllers\TransferenciasElectronicasController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ValoresFundamentalesController;
 use App\Http\Controllers\VideoEducacionFinancieraController;
 use App\Http\Controllers\VigilanciaController;
 use App\Models\CaracteristicasDpf;
@@ -281,12 +283,25 @@ Route::group(["middleware" => "auth:sanctum"], function () {
   // *************  info ser socio  **********
   Route::get('info-ser-socio', [InfoSerSocioController::class, 'index']);
   Route::post('info-ser-socio-nuevo', [InfoSerSocioController::class, 'actualizarDatos']);
-    // *************  requerimientos de ser socio  **********
-    Route::get('requerimientos-de-ser-socios', [RequerimientosSerSocioController::class, 'index']);
-    Route::post('requerimientos-de-ser-socios-nuevo', [RequerimientosSerSocioController::class, 'store']);
-    Route::get('requerimientos-de-ser-socios/{id}', [RequerimientosSerSocioController::class, 'show']);
-    Route::put('requerimientos-de-ser-socios/{id}', [RequerimientosSerSocioController::class, 'update']);
-    Route::delete('requerimientos-de-ser-socios/{id}', [RequerimientosSerSocioController::class, 'destroy']);
+  // *************  requerimientos de ser socio  **********
+  Route::get('requerimientos-de-ser-socios', [RequerimientosSerSocioController::class, 'index']);
+  Route::post('requerimientos-de-ser-socios-nuevo', [RequerimientosSerSocioController::class, 'store']);
+  Route::get('requerimientos-de-ser-socios/{id}', [RequerimientosSerSocioController::class, 'show']);
+  Route::put('requerimientos-de-ser-socios/{id}', [RequerimientosSerSocioController::class, 'update']);
+  Route::delete('requerimientos-de-ser-socios/{id}', [RequerimientosSerSocioController::class, 'destroy']);
+  // *************  valores fundamentales  **********
+  Route::get('valores-fundamentales', [ValoresFundamentalesController::class, 'index']);
+  Route::post('valores-fundamentales-nuevo', [ValoresFundamentalesController::class, 'store']);
+  Route::get('valores-fundamentales/{id}', [ValoresFundamentalesController::class, 'show']);
+  Route::put('valores-fundamentales/{id}', [ValoresFundamentalesController::class, 'update']);
+  Route::delete('valores-fundamentales/{id}', [ValoresFundamentalesController::class, 'destroy']);
+  // DPF card
+  Route::get('/dpf-card', [DpfCardController::class, 'index']);
+  Route::post('/dpf-card/edicion', [DpfCardController::class, 'update']);
+
+
+  Route::get('/user', [UserController::class, 'showAuthenticatedUser']); // Para mostrar los datos del usuario
+  Route::put('/user', [UserController::class, 'update']); // Para actualizar los datos del usuario
 });
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -359,6 +374,10 @@ Route::get('/educacion-financiera-video-activos', [VideoEducacionFinancieraContr
 Route::get('info-ser-socio-activo', [InfoSerSocioController::class, 'indexActivo']);
 // requerimientos de ser socio activos
 Route::get('requerimientos-de-ser-socios-activos', [RequerimientosSerSocioController::class, 'indexActivos']);
+// valores fundamentales activos
+Route::get('valores-fundamentales-activos', [ValoresFundamentalesController::class, 'indexActivos']);
+//
+Route::get('/dpf-card-activo', [DpfCardController::class, 'index2']);
 Route::get('/principios-text', [PrincipiosTextController::class, 'lecturaitem']);
 
 // Redes Sociales

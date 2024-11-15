@@ -28,13 +28,16 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function showAuthenticatedUser ()
     {
-        $item = User::with('roles')->find($id);
-        if (!$item) {
-            return response()->json(["mensaje" => "El usuario no existe"], 404);
-        }
-        return response()->json(["datos" => $item]);
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Cargar roles si es necesario
+        $user->load('roles');
+
+        // Devolver la respuesta
+        return response()->json(["datos" => $user]);
     }
 
     /**
@@ -55,10 +58,15 @@ class UserController extends Controller
         ]);
 
         // Actualizar los datos del usuario
-        $user->nombre = $request->input('nombre', $user->nombre);
-        $user->apellido = $request->input('apellido', $user->apellido);
-        $user->email = $request->input('email', $user->email);
-
+        if ($request->has('nombre')) {
+            $user->nombre = $request->input('nombre');
+        }
+        if ($request->has('apellido')) {
+            $user->apellido = $request->input('apellido');
+        }
+        if ($request->has('email')) {
+            $user->email = $request->input('email');
+        }
         // Actualizar la contraseña solo si se proporciona
         if ($request->has('password')) {
             $user->password = bcrypt($request->input('password'));
@@ -82,9 +90,8 @@ class UserController extends Controller
     {
         // Obtener todos los usuarios que están activos
         $activeUsers = User::with('roles')->where('is_active', true)->get();
-    
+
         // Devolver la respuesta
         return response()->json(["datos" => $activeUsers]);
     }
-    
 }

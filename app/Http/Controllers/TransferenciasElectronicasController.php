@@ -40,7 +40,7 @@ class TransferenciasElectronicasController extends Controller
         if ($request->file('imagen')) {
             // Verificar si hay una foto existente antes de guardar la nueva
             if ($item->exists && $item->imagen) {
-                $existingImagePath = 'images/transferencias_electronicas/' . $item->foto;
+                $existingImagePath = 'images/transferencias_electronicas/' . $item->imagen;
                 if (file_exists($existingImagePath)) {
                     unlink($existingImagePath);
                 }
