@@ -22,6 +22,7 @@ class PuntoDeReclamoExport implements FromCollection, WithHeadings, ShouldAutoSi
             $formattedDate = $date->format('d \d\e F \d\e Y \a \l\a\s h:i A'); // Ejemplo: "31 de octubre de 2024 a las 12:55 AM"
 
             return [
+                $item->pr_web,
                 $item->id, // Asegúrate de incluir el ID
                 $item->fecha_del_hecho,
                 $item->categoria,
@@ -52,6 +53,7 @@ class PuntoDeReclamoExport implements FromCollection, WithHeadings, ShouldAutoSi
     public function headings(): array
     {
         return [
+            'PER-WEB',
             'ID',
             'Fecha del hecho',
             'Categoria',
@@ -83,7 +85,7 @@ class PuntoDeReclamoExport implements FromCollection, WithHeadings, ShouldAutoSi
     return [
         AfterSheet::class => function (AfterSheet $event) {
             // Estilo para los encabezados
-            $cellRange = 'A1:W1'; // Ajusta el rango según el número de columnas
+            $cellRange = 'A1:X1'; // Ajusta el rango según el número de columnas
             $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setBold(true);
             $event->sheet->getDelegate()->getStyle($cellRange)->getFont()->setSize(12);
             $event->sheet->getDelegate()->getStyle($cellRange)->getAlignment()->setHorizontal('center');

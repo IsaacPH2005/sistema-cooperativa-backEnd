@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('punto_de_reclamos', function (Blueprint $table) {
             $table->id();
+            $table->string('pr_web')->default('PR-WEB');
             $table->date('fecha_del_hecho');
             $table->string('categoria')->nullable();
             $table->string('sub_categoria')->nullable();

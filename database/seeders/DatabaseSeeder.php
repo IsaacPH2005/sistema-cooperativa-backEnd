@@ -29,5 +29,10 @@ class DatabaseSeeder extends Seeder
         $this->call(class: [CuentaDeAhorroSeeder::class]);
         $this->call(class: [InfoSerSocioSeeder::class]);
         $this->call(class: [DpfWebCardSeeder::class]);
+        $this->call(class: [CooperativaInfoSeeder::class]);
+        $this->call(class: [TasasTarifasSeeder::class]);
+        $this->call(class: [CodigoEticaSeeder::class]);
+        $this->call(class: [PdfCalificacionDeRiesgoSeeder::class]);
+        $this->call(class: [TablaCalificacionDeRiesgoSeeder::class]);
     }
 }

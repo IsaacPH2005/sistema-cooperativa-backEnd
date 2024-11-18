@@ -97,7 +97,7 @@ class MemoriasInstitucionalController extends Controller
     $request->validate([
         "titulo" => 'required|string|max:255',
         "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg',
-        "pdf" => 'nullable|mimes:pdf|max:10240',
+        "pdf" => 'nullable|mimes:pdf|max:40960',
         "descripcion" => 'nullable|string',
     ]);
 

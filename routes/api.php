@@ -10,9 +10,12 @@ use App\Http\Controllers\api\DPF\BeneficiosDpfController;
 use App\Http\Controllers\api\DPF\CaracteristicasDpfController;
 use App\Http\Controllers\api\DPF\RequisitosDpfController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BeneficiosDeSerSocioWeb;
+use App\Http\Controllers\CodigoEticaController;
 use App\Http\Controllers\CoeficienteAdecuacionPatrimonialController;
 use App\Http\Controllers\ComunicadosController;
 use App\Http\Controllers\ContactanosController;
+use App\Http\Controllers\CooperativaInfoController;
 use App\Http\Controllers\CreditosController;
 use App\Http\Controllers\DictamenesAuditoriasController;
 use App\Http\Controllers\DpfCardController;
@@ -28,6 +31,7 @@ use App\Http\Controllers\LicitacionPublicasController;
 use App\Http\Controllers\MemoriasInstitucionalController;
 use App\Http\Controllers\PaginaBannersController;
 use App\Http\Controllers\PaginasController;
+use App\Http\Controllers\PdfCalificacionDeRiesgoController;
 use App\Http\Controllers\PrincipiosController;
 use App\Http\Controllers\PrincipiosTextController;
 use App\Http\Controllers\PuntoDeReclamoController;
@@ -36,7 +40,9 @@ use App\Http\Controllers\RequerimientosSerSocioController;
 use App\Http\Controllers\ResponsabilidadSocialController;
 use App\Http\Controllers\SeguridadTipsController;
 use App\Http\Controllers\ServiciosBasicosController;
+use App\Http\Controllers\TablaCalificacionDeRiesgoController;
 use App\Http\Controllers\TabladpfController;
+use App\Http\Controllers\TasasYTarifaController;
 use App\Http\Controllers\TestimoniosController;
 use App\Http\Controllers\TransferenciasElectronicasController;
 use App\Http\Controllers\UserController;
@@ -298,7 +304,29 @@ Route::group(["middleware" => "auth:sanctum"], function () {
   // DPF card
   Route::get('/dpf-card', [DpfCardController::class, 'index']);
   Route::post('/dpf-card/edicion', [DpfCardController::class, 'update']);
-
+  // *************  beneficios de ser socio  **********
+  Route::get('beneficios-ser-socios', [BeneficiosDeSerSocioWeb::class, 'index']);
+  Route::post('beneficios-ser-socios-nuevo', [BeneficiosDeSerSocioWeb::class, 'store']);
+  Route::get('beneficios-ser-socios/{id}', [BeneficiosDeSerSocioWeb::class, 'show']);
+  Route::put('beneficios-ser-socios/{id}', [BeneficiosDeSerSocioWeb::class, 'update']);
+  Route::delete('beneficios-ser-socios/{id}', [BeneficiosDeSerSocioWeb::class, 'destroy']);
+  // que es una cooperativa de ahorro y credito
+  Route::get('/coop-info', [CooperativaInfoController::class, 'index']);
+  Route::post('/coop-info/edicion', [CooperativaInfoController::class, 'update']);
+  // codigo etica
+  Route::get('/codigo-etica', [CodigoEticaController::class, 'index']);
+  Route::post('/codigo-etica/edicion', [CodigoEticaController::class, 'update']);
+  // tasas y tarifas
+  Route::get('/tasas-tarifas', [TasasYTarifaController::class, 'index']);
+  Route::post('/tasas-tarifas/edicion', [TasasYTarifaController::class, 'update']);
+  // Calificacion de riesgo
+  Route::get('/calificacion-de-riesgo', [PdfCalificacionDeRiesgoController::class, 'index']);
+  Route::post('/calificacion-de-riesgo/edicion', [PdfCalificacionDeRiesgoController::class, 'update']);
+        // Tabla calificacion de riesgo
+        Route::get('/calificacion-de-riesgo-tabla', [TablaCalificacionDeRiesgoController::class, 'index']);
+        Route::post('/calificacion-de-riesgo-tabla/edicion', [TablaCalificacionDeRiesgoController::class, 'store']);
+        Route::delete('/calificacion-de-riesgo-tabla-estado/{id}', [TablaCalificacionDeRiesgoController::class, 'estado']);
+      
 
   Route::get('/user', [UserController::class, 'showAuthenticatedUser']); // Para mostrar los datos del usuario
   Route::put('/user', [UserController::class, 'update']); // Para actualizar los datos del usuario
@@ -376,7 +404,18 @@ Route::get('info-ser-socio-activo', [InfoSerSocioController::class, 'indexActivo
 Route::get('requerimientos-de-ser-socios-activos', [RequerimientosSerSocioController::class, 'indexActivos']);
 // valores fundamentales activos
 Route::get('valores-fundamentales-activos', [ValoresFundamentalesController::class, 'indexActivos']);
-//
+// beneficios ser socio activos
+Route::get('beneficios-ser-socios-activos', [BeneficiosDeSerSocioWeb::class, 'indexActivos']);
+//cooperativa de ahorro y credito activo
+Route::get('/coop-info-activo', [CooperativaInfoController::class, 'index2']);
+//codigo etica activo
+Route::get('/codigo-etica-activo', [CodigoEticaController::class, 'index2']);
+//tasas y tarifas activo
+Route::get('/tasas-tarifas-activo', [TasasYTarifaController::class, 'index2']);
+//Calificacion de riesgo activa
+Route::get('/calificacion-de-riesgo-activo', [PdfCalificacionDeRiesgoController::class, 'index2']);
+// tabla calificacion de riesgo
+Route::get('/calificacion-de-riesgo-tabla-activo', [TablaCalificacionDeRiesgoController::class, 'index2']);
 Route::get('/dpf-card-activo', [DpfCardController::class, 'index2']);
 Route::get('/principios-text', [PrincipiosTextController::class, 'lecturaitem']);
 

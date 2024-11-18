@@ -54,6 +54,7 @@
     <table>
         <thead>
             <tr>
+                <th>PER-WEB</th>
                 <th>ID</th>
                 <th>Fecha del hecho</th>
                 <th>Categoria</th>
@@ -81,6 +82,7 @@
         <tbody>
             @foreach($PuntoDeReclamos as $item)
             <tr>
+                <td>{{ $item->pr_web }}</td>
                 <td>{{ $item->id }}</td>
                 <td>{{ $item->fecha_del_hecho }}</td>
                 <td>{{ $item->categoria }}</td>
