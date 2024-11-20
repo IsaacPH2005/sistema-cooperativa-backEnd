@@ -35,7 +35,7 @@ class SeguridadTipsController extends Controller
     {
         $request->validate([
             "titulo" => "required",
-            "imagen" => "required|mimes:png,jpg,jpeg,gif",
+            "imagen" => "required|mimes:png,jpg,jpeg,gif,webp|max:20480",
             "recomendaciones" => "required|array", // Asegúrate de que sea un array
         ]);
         try {
@@ -50,7 +50,7 @@ class SeguridadTipsController extends Controller
                 // Obtener el archivo de la imagen
                 $imagen = $request->file('imagen');
                 // Generar un nombre único para la imagen
-                $nombreImagen = time() . '.png';
+                $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
                 // Mover la imagen a la carpeta correspondiente
                 $imagen->move("images/seguridad_tips/", $nombreImagen);
                 // Asignar el nombre de la imagen al objeto
@@ -105,7 +105,7 @@ class SeguridadTipsController extends Controller
         // Validar la solicitud
         $request->validate([
             "titulo" => "nullable",
-            "imagen" => "nullable|mimes:png,jpg,jpeg,gif",
+            "imagen" => "nullable|mimes:png,jpg,jpeg,gif.webp|max:20480",
             "recomendaciones" => "nullable|array",
         ]);
 
@@ -125,7 +125,7 @@ class SeguridadTipsController extends Controller
                 // Obtener el archivo de la imagen
                 $imagen = $request->file('imagen');
                 // Generar un nombre único para la imagen
-                $nombreImagen = time() . '.png';
+                $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
                 // Mover la imagen a la carpeta correspondiente
                 $imagen->move("images/seguridad_tips/", $nombreImagen);
                 // Asignar el nombre de la imagen al objeto

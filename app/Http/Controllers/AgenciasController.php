@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\agencias;
+use App\Models\AgenciasCooperativas;
 use App\Models\horarios;
+use App\Models\HorariosAgencias;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +17,7 @@ class AgenciasController extends Controller
     public function index()
     {
         // Obtener las agencias con sus horarios
-        $items = agencias::orderBy('id', 'desc')->with('horarios')->paginate(10);
+        $items = AgenciasCooperativas::orderBy('id', 'desc')->with('horarios')->paginate(10);
 
         // Mapear los items para agregar las URLs de las imágenes
         $items->getCollection()->transform(function ($item) {
@@ -36,7 +38,7 @@ class AgenciasController extends Controller
             'nombre' => 'required|string|max:255',
             'calle' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:255',
-            'imagen' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'imagen' => 'image|mimes:jpeg,png,jpg,gif,webp|max:20480',
             'url_mapa' => 'nullable|url', // Validar que sea una URL válida
             'dias' => 'required|array', // Cambiar a array
             'dias.*' => 'string', // Validar que cada elemento sea una cadena
@@ -48,7 +50,7 @@ class AgenciasController extends Controller
             DB::beginTransaction();
 
             // Crear el registro de agencias
-            $item = new agencias();
+            $item = new AgenciasCooperativas();
             $item->nombre = $request->nombre;
             $item->calle = $request->calle;
             $item->telefono = $request->telefono;
@@ -58,7 +60,7 @@ class AgenciasController extends Controller
                     unlink('images/agencias/' . $item->imagen);
                 }
                 $imagen = $request->file('imagen');
-                $nombreImagen = time() . '.png';
+                $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
                 $imagen->move("images/agencias/", $nombreImagen);
                 $item->imagen = $nombreImagen;
             }
@@ -68,7 +70,7 @@ class AgenciasController extends Controller
             $dias = $request->dias; // Esto ahora es un arreglo
             $horas = $request->horas; // Esto ahora es un arreglo
             foreach ($dias as $key => $dia) {
-                $item2 = new horarios();
+                $item2 = new HorariosAgencias();
                 $item2->agencia_id = $item->id; // Establecer la clave foránea
                 $item2->dias = $dia; // Asignar el día correspondiente
                 $item2->horas = isset($horas[$key]) ? $horas[$key] : null; // Asignar la hora correspondiente
@@ -88,7 +90,7 @@ class AgenciasController extends Controller
     public function show(string $id)
     {
         // Buscar la agencia por su ID
-        $agencia = agencias::with('horarios')->find($id);
+        $agencia = AgenciasCooperativas::with('horarios')->find($id);
 
         // Verificar si la agencia existe
         if (!$agencia) {
@@ -116,7 +118,7 @@ class AgenciasController extends Controller
             'calle' => 'required|string',
             'telefono' => 'nullable|string|max:255',
             'url_mapa' => 'nullable|url', // Validar que sea una URL válida
-            'imagen' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Cambié 'imagenes' a 'imagen'
+            'imagen' => 'image|mimes:jpeg,png,jpg,gif,webp|max:20480', // Cambié 'imagenes' a 'imagen'
             'dias' => 'required|array', // Cambié a array
             'horas' => 'required|array', // Cambié a array
         ]);
@@ -125,7 +127,7 @@ class AgenciasController extends Controller
             DB::beginTransaction();
 
             // Buscar el registro de la agencia
-            $item = agencias::findOrFail($id);
+            $item = AgenciasCooperativas::findOrFail($id);
             $item->nombre = $request->nombre;
             $item->calle = $request->calle;
             $item->telefono = $request->telefono;
@@ -137,7 +139,7 @@ class AgenciasController extends Controller
                     unlink('images/agencias/' . $item->imagen);
                 }
                 $imagen = $request->file('imagen');
-                $nombreImagen = time() . '.png';
+                $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
                 $imagen->move("images/agencias/", $nombreImagen);
                 $item->imagen = $nombreImagen;
             }
@@ -146,13 +148,13 @@ class AgenciasController extends Controller
 
             // Actualizar horarios
             // Primero, elimina los horarios existentes
-            horarios::where('agencia_id', $item->id)->delete();
+            HorariosAgencias::where('agencia_id', $item->id)->delete();
 
             // Luego, crea nuevos registros de horarios
             $dias = $request->dias; // Asegúrate de que esto sea un array
             $horas = $request->horas; // Asegúrate de que esto sea un array
             foreach ($dias as $key => $dia) {
-                $item2 = new horarios();
+                $item2 = new HorariosAgencias();
                 $item2->agencia_id = $item->id; // Set the foreign key
                 $item2->dias = $dia; // Asigna el día correspondiente
                 $item2->horas = isset($horas[$key]) ? $horas[$key] : null; // Asigna la hora correspondiente
@@ -172,7 +174,7 @@ class AgenciasController extends Controller
      */
     public function destroy(string $id)
     {
-        $item = agencias::find($id);
+        $item = AgenciasCooperativas::find($id);
         $item->estado = !$item->estado;
         if ($item->save()) {
             return response()->json(["mensaje" => "Estado modificado", "datos" => $item], 202);
@@ -182,7 +184,7 @@ class AgenciasController extends Controller
     }
     public function indexActivos()
     {
-        $items = agencias::with('horarios')->where('estado', true)->get();
+        $items = AgenciasCooperativas::with('horarios')->where('estado', true)->get();
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->transform(function ($item) {
             $item->imagen = asset('images/agencias/' . $item->imagen);

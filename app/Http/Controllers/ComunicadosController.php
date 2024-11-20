@@ -31,7 +31,7 @@ class ComunicadosController extends Controller
         $request->validate([
             "titulo" => "nullable",
             "descripcion" => "nullable",
-            "imagen" => "required|image|mimes:jpeg,png,jpg,gif,webp", // Permitir varios formatos de imagen
+            "imagen" => "required|image|mimes:jpeg,png,jpg,gif,webp|max:20480", // Permitir varios formatos de imagen
             "url" => "nullable",
         ]);
 
@@ -45,7 +45,7 @@ class ComunicadosController extends Controller
                 unlink('images/comunicados/' . $item->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/comunicados/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
@@ -85,7 +85,7 @@ class ComunicadosController extends Controller
             "titulo" => "nullable",
             "descripcion" => "nullable",
             "url" => "nullable",
-            "imagen" => "nullable|image|mimes:jpeg,png,jpg,gif,webp", // Permitir varios formatos de imagen
+            "imagen" => "nullable|image|mimes:jpeg,png,jpg,gif,webp|max:20480", // Permitir varios formatos de imagen
         ]);
 
         $item = comunicados::find($id);
@@ -106,7 +106,7 @@ class ComunicadosController extends Controller
                 unlink('images/comunicados/' . $item->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/comunicados/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }

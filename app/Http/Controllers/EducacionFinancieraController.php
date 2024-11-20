@@ -30,8 +30,8 @@ class EducacionFinancieraController extends Controller
         // Validate the incoming request
         $request->validate([
             "nombre" => "required",
-            "pdf" => "required|file|mimes:pdf|max:2048", // Ensure the PDF is validated
-            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            "pdf" => "required|file|mimes:pdf|max:40960", // Ensure the PDF is validated
+            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg,webp|max:20480',
         ]);
 
         // Create a new instance of the model
@@ -49,7 +49,7 @@ class EducacionFinancieraController extends Controller
             }
             // Upload the new PDF
             $pdf = $request->file('pdf');
-            $nombrePdf = time() . '.' . $pdf->getClientOriginalExtension();
+            $nombrePdf = md5_file($pdf->getPathname()) . '.' . $pdf->getClientOriginalExtension();
             $pdf->move("pdfs/educacion_financiera/", $nombrePdf);
             $item->pdf = $nombrePdf;
         }
@@ -65,7 +65,7 @@ class EducacionFinancieraController extends Controller
             }
             // Upload the new image
             $imagen_pdf = $request->file('imagen_pdf');
-            $nombreImagen = time() . '.' . $imagen_pdf->getClientOriginalExtension();
+            $nombreImagen = md5_file($imagen_pdf->getPathname()) . '.' . $imagen_pdf->getClientOriginalExtension();
             $imagen_pdf->move("images/educacion_financiera/", $nombreImagen);
             $item->imagen_pdf = $nombreImagen;
         }
@@ -103,7 +103,7 @@ class EducacionFinancieraController extends Controller
         // Validar los datos de entrada
         $request->validate([
             'nombre' => 'required',
-            "pdf" => 'nullable|mimes:pdf',
+            "pdf" => 'nullable|mimes:pdf|max:40960',
             "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg',
         ]);
 

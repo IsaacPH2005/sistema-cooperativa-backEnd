@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nombre');
             $table->string( 'apellido');
             $table->string('cargo');
-            $table->text('foto');
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -34,5 +35,11 @@ class DatabaseSeeder extends Seeder
         $this->call(class: [CodigoEticaSeeder::class]);
         $this->call(class: [PdfCalificacionDeRiesgoSeeder::class]);
         $this->call(class: [TablaCalificacionDeRiesgoSeeder::class]);
+        $this->call(class: [CaracteristicasCuentaDeAhorroSeeder::class]);
+        $this->call(class: [RequesitosCuentaDeAhorroSeeder::class]);
+        $this->call(class: [TablaDpfSeeder::class]);
+        $this->call(class: [CaracteristicasDpfSeeder::class]);
+        $this->call(class: [RequisitosDpfSeeder::class]);
+        $this->call(class: [BeneficiosDpfSeeder::class]);
     }
 }

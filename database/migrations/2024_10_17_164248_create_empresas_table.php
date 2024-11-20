@@ -17,9 +17,11 @@ return new class extends Migration
             $table->text("vision");
             $table->text("historia");
             $table->text("aspecto_legal");
-            $table->text("imagen");
-            $table->text("asfi_imagen");
-            $table->text('logo');
+            $table->text('img_vision')->nullable();
+            $table->text('img_mision')->nullable();
+            $table->text("imagen")->nullable();
+            $table->text("asfi_imagen")->nullable();
+            $table->text('logo')->nullable();
             $table->string('celular')->nullable();
             $table->string('direccion')->nullable();
             $table->string('email')->nullable();

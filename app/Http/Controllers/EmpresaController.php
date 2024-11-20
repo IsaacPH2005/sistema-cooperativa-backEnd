@@ -22,6 +22,12 @@ class EmpresaController extends Controller
             if ($empresa->logo) {
                 $empresa->logo = asset('images/empresa/' . $empresa->logo);
             }
+            if ($empresa->img_vision) {
+                $empresa->img_vision = asset('images/empresa/' . $empresa->img_vision);
+            }
+            if ($empresa->img_mision) {
+                $empresa->img_mision = asset('images/empresa/' . $empresa->img_mision);
+            }
             return response()->json($empresa, 200);
         } catch (\Throwable $e) {
             // Registrar el error para depuración
@@ -42,6 +48,12 @@ class EmpresaController extends Controller
             if ($empresa->logo) {
                 $empresa->logo = asset('images/empresa/' . $empresa->logo);
             }
+            if ($empresa->img_vision) {
+                $empresa->img_vision = asset('images/empresa/' . $empresa->img_vision);
+            }
+            if ($empresa->img_mision) {
+                $empresa->img_mision = asset('images/empresa/' . $empresa->img_mision);
+            }
             return response()->json($empresa, 200);
         } catch (\Throwable $e) {
             // Registrar el error para depuración
@@ -60,9 +72,11 @@ class EmpresaController extends Controller
                 'historia' => 'required',
                 'aspecto_legal' => 'required',
                 // Descomentar y ajustar si deseas validar las imágenes
-                "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                "asfi_imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
-                "logo" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
+                "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg.webp|max:20480',
+                "asfi_imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg.webp|max:20480',
+                "logo" => 'nullable|mimes:jpg,png,jpeg,gif,svg.webp|max:20480',
+                "img_vision" => 'nullable|mimes:jpg,png,jpeg,gif,svg.webp|max:20480',
+                "img_mision" => 'nullable|mimes:jpg,png,jpeg,gif,svg.webp|max:20480',
                 "direccion" => 'nullable',
                 "celular" => 'nullable',
                 "email" => 'nullable|email',
@@ -82,7 +96,7 @@ class EmpresaController extends Controller
             // Manejar la actualización de la imagen
             if ($request->file('imagen')) {
                 $imagen = $request->file('imagen');
-                $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
+                $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
                 $imagen->move("images/empresa/", $nombreImagen);
                 $empresa->imagen = $nombreImagen; // Asignar la nueva imagen
             }
@@ -90,7 +104,7 @@ class EmpresaController extends Controller
             // Manejar la actualización de asfi_imagen
             if ($request->file('asfi_imagen')) {
                 $asfiImagen = $request->file('asfi_imagen');
-                $nombreAsfiImagen = time() . '.' . $asfiImagen->getClientOriginalExtension(); // Usar la extensión original
+                $nombreAsfiImagen = md5_file($asfiImagen->getPathname()) . '.' . $asfiImagen->getClientOriginalExtension();
                 $asfiImagen->move("images/empresa/", $nombreAsfiImagen);
                 $empresa->asfi_imagen = $nombreAsfiImagen; // Asignar la nueva imagen
             }
@@ -98,9 +112,23 @@ class EmpresaController extends Controller
             // Manejar la actualización del logo
             if ($request->file('logo')) {
                 $logo = $request->file('logo');
-                $nombreLogo = time() . '.' . $logo->getClientOriginalExtension(); // Usar la extensión original
+                $nombreLogo = md5_file($logo->getPathname()) . '.' . $logo->getClientOriginalExtension();
                 $logo->move("images/empresa/", $nombreLogo);
                 $empresa->logo = $nombreLogo; // Asignar la nueva imagen
+            }
+              // Manejar la actualización del logo
+              if ($request->file('img_vision')) {
+                $img_vision = $request->file('img_vision');
+                $nombreimg_vision = md5_file($img_vision->getPathname()) . '.' . $img_vision->getClientOriginalExtension();
+                $img_vision->move("images/empresa/", $nombreimg_vision);
+                $empresa->img_vision = $nombreimg_vision; // Asignar la nueva imagen
+            }
+              // Manejar la actualización del logo
+              if ($request->file('img_mision')) {
+                $img_mision = $request->file('img_mision');
+                $nombreimg_mision = md5_file($img_mision->getPathname()) . '.' . $img_mision->getClientOriginalExtension();
+                $img_mision->move("images/empresa/", $nombreimg_mision);
+                $empresa->img_mision = $nombreimg_mision; // Asignar la nueva imagen
             }
 
             // Actualizar otros campos

@@ -16,11 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->text('descripcion')->nullable();
             $table->string('imagen')->nullable();
-            $table->string('titulo')->nullable();
-            $table->string('sub_titulo')->nullable();
-            $table->string('banner_imagen')->nullable();
             $table->boolean('estado')->default(true);
-            $table->string('cantidad')->nullable();
             $table->timestamps();
         });
     }

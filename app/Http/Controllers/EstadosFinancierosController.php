@@ -37,8 +37,8 @@ class EstadosFinancierosController extends Controller
     {
         $request->validate([
             "titulo" => 'required|string|max:255',
-            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            "pdf" => 'required|mimes:pdf|max:10240',
+            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg,webp|max:20480',
+            "pdf" => 'required|mimes:pdf|max:40960',
             "descripcion" => 'nullable|string',
         ]);
 
@@ -52,7 +52,7 @@ class EstadosFinancierosController extends Controller
                 unlink('images/estados_financieros/' . $item->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/estados_financieros/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
@@ -62,7 +62,7 @@ class EstadosFinancierosController extends Controller
                 unlink('pdfs/estados_financieros/' . $item->pdf);
             }
             $pdf = $request->file('pdf');
-            $nombrePdf = time() . '.pdf';
+            $nombrePdf = md5_file($pdf->getPathname()) . '.' . $pdf->getClientOriginalExtension();
             $pdf->move("pdfs/estados_financieros/", $nombrePdf);
             $item->pdf = $nombrePdf;
         }
@@ -99,8 +99,8 @@ class EstadosFinancierosController extends Controller
         // Validar los datos de entrada
         $request->validate([
             "titulo" => 'required|string|max:255',
-            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            "pdf" => 'nullable|mimes:pdf|max:10240',
+            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg,webp|max:20480',
+            "pdf" => 'nullable|mimes:pdf|max:40960',
             "fecha" => 'nullable|date',
             "descripcion" => 'nullable|string',
         ]);
@@ -126,7 +126,7 @@ class EstadosFinancierosController extends Controller
             }
             // Subir la nueva imagen
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension();
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/estados_financieros/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
@@ -139,7 +139,7 @@ class EstadosFinancierosController extends Controller
             }
             // Subir el nuevo PDF
             $pdf = $request->file('pdf');
-            $nombrePdf = time() . '.' . $pdf->getClientOriginalExtension();
+            $nombrePdf = md5_file($pdf->getPathname()) . '.' . $pdf->getClientOriginalExtension();
             $pdf->move("pdfs/estados_financieros/", $nombrePdf);
             $item->pdf = $nombrePdf;
         }

@@ -29,7 +29,7 @@ class ValoresFundamentalesController extends Controller
         $request->validate([
             "titulo" => "required",
             "descripcion" => "required",
-            "imagen" => "required|image|mimes:jpeg,png,jpg",
+            "imagen" => "required|image|mimes:jpeg,png,jpg|max:20480",
         ]);
 
         $item = new ValoresFundamentales();
@@ -80,7 +80,7 @@ class ValoresFundamentalesController extends Controller
         $request->validate([
             "titulo" => "required",
             "descripcion" => "required",
-            "imagen" => "nullable|image|mimes:jpeg,png,jpg",
+            "imagen" => "nullable|image|mimes:jpeg,png,jpg,webp|max:20480",
         ]);
         $item->titulo = $request->titulo;
         $item->descripcion = $request->descripcion;
@@ -94,7 +94,7 @@ class ValoresFundamentalesController extends Controller
             }
     
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/valores_fundamentales/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }

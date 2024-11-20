@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('memorias_institucionales', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
-            $table->string('imagen');
+            $table->string('imagen')->nullable();
             $table->string('pdf');
-            $table->date('fecha');
+            $table->date('fecha')->nullable();
             $table->text('descripcion')->nullable();
             $table->boolean('estado')->default(true);
             $table->timestamps();

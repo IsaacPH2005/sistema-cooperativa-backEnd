@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('caracteristicas_dpfs', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
-            $table->string('descripcion');
+            $table->text('descripcion');
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

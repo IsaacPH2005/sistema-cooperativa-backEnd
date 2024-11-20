@@ -35,7 +35,7 @@ class ServiciosBasicosController extends Controller
     {
         $request->validate([
             "nombre" => "required",
-            "imagen" => "required|image|mimes:jpeg,png,jpg",
+            "imagen" => "required|image|mimes:jpeg,png,jpg,webp||max:20480",
         ]);
         $item = new servicios();
         $item->nombre = $request->nombre;
@@ -50,7 +50,7 @@ class ServiciosBasicosController extends Controller
             }
     
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/servicios_basicos/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
@@ -88,7 +88,7 @@ class ServiciosBasicosController extends Controller
         }
         $request->validate([
             "nombre" => "required",
-            "imagen" => "image|mimes:jpeg,png,jpg",
+            "imagen" => "image|mimes:jpeg,png,jpg,webp||max:20480",
         ]);
         $item->nombre = $request->nombre;
         $item->descripcion = $request->descripcion;
@@ -102,7 +102,7 @@ class ServiciosBasicosController extends Controller
             }
     
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/servicios_basicos/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }

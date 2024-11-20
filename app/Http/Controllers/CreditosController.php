@@ -25,9 +25,7 @@ class CreditosController extends Controller
         // Mapear los items para agregar las URLs de las imágenes
         $items->transform(function ($item) use ($defaultImage) {
             // Asignar la imagen si existe, de lo contrario, usar la imagen predeterminada
-            $item->imagen = $item->imagen ? asset('images/creditos/' . $item->imagen) : $defaultImage;
-            $item->banner_imagen = $item->banner_imagen ? asset('images/creditos/' . $item->banner_imagen) : $defaultImage;
-
+            $item->imagen = asset('images/creditos/' . $item->imagen);
             return $item;
         });
 
@@ -42,20 +40,15 @@ class CreditosController extends Controller
         $request->validate([
             "nombre" => "required",
             "descripcion" => "nullable",
-            "imagen" => "nullable|mimes:png,jpg,jpeg,gif",
-            "banner_imagen" => "nullable|mimes:png,jpg,jpeg,gif", // Corregido
-            "cantidad" => "nullable",
+            "imagen" => "nullable|mimes:png,jpg,jpeg,gif,webp|max:20480",
             "caracteristicas" => "required|array", // Asegúrate de que sea un array
             "requisitos" => "required|array", // Asegúrate de que sea un array
-            "titulo" => "nullable",
-            "sub_titulo" => "nullable",
         ]);
         try {
             DB::beginTransaction();
             $item = new creditos();
             $item->nombre = $request->nombre;
             $item->descripcion = $request->descripcion;
-            $item->cantidad = $request->cantidad;
             $item->titulo = $request->titulo;
             $item->sub_titulo = $request->sub_titulo;
             if ($request->file('imagen')) {
@@ -66,25 +59,11 @@ class CreditosController extends Controller
                 // Obtener el archivo de la imagen
                 $imagen = $request->file('imagen');
                 // Generar un nombre único para la imagen
-                $nombreImagen = time() . '.png';
+                $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
                 // Mover la imagen a la carpeta correspondiente
                 $imagen->move("images/creditos/", $nombreImagen);
                 // Asignar el nombre de la imagen al objeto
                 $item->imagen = $nombreImagen;
-            }
-            if ($request->file('banner_imagen')) {
-                // Eliminar la imagen del banner anterior si existe
-                if ($item->banner_imagen) {
-                    Storage::delete('images/creditos/' . $item->banner_imagen);
-                }
-                // Obtener el archivo de la banner imagen
-                $bannerImagen = $request->file('banner_imagen'); // Cambiado a 'banner_imagen'
-                // Generar un nombre único para la banner imagen
-                $nombreBannerImagen = time() . '_banner.png'; // Puedes usar un sufijo para diferenciarlos
-                // Mover la banner imagen a la carpeta correspondiente
-                $bannerImagen->move("images/creditos/", $nombreBannerImagen);
-                // Asignar el nombre de la banner imagen al objeto
-                $item->banner_imagen = $nombreBannerImagen; // Cambiado a 'banner_imagen'
             }
             $item->save();
             // Guardar características
@@ -134,8 +113,6 @@ class CreditosController extends Controller
 
         // Asignar la imagen si existe, de lo contrario, usar la imagen predeterminada
         $item->imagen = $item->imagen ? asset('images/creditos/' . $item->imagen) : $defaultImage;
-        $item->banner_imagen = $item->banner_imagen ? asset('images/creditos/' . $item->banner_imagen) : $defaultImage;
-
         // Devolver el item con la URL de la imagen
         return response()->json(["mensaje" => "Datos cargados", "datos" => $item], 200);
     }
@@ -154,8 +131,6 @@ class CreditosController extends Controller
 
         // Asignar la imagen si existe, de lo contrario, usar la imagen predeterminada
         $item->imagen = $item->imagen ? asset('images/creditos/' . $item->imagen) : $defaultImage;
-        $item->banner_imagen = $item->banner_imagen ? asset('images/creditos/' . $item->banner_imagen) : $defaultImage;
-
         // Devolver el item con la URL de la imagen
         return response()->json(["mensaje" => "Datos cargados", "datos" => $item], 200);
     }
@@ -167,15 +142,11 @@ class CreditosController extends Controller
 {
     // Validar la solicitud
     $request->validate([
-        "nombre" => "nullable",
+        "nombre" => "required",
         "descripcion" => "nullable",
-        "imagen" => "nullable|mimes:png,jpg,jpeg,gif",
-        "banner_imagen" => "nullable|mimes:png,jpg,jpeg,gif",
-        "cantidad" => "nullable",
+        "imagen" => "nullable|mimes:png,jpg,jpeg,gif,webp|max:20480",
         "caracteristicas" => "nullable|array",
         "requisitos" => "nullable|array",
-        "titulo" => "nullable",
-        "sub_titulo" => "nullable",
     ]);
 
     try {
@@ -187,7 +158,6 @@ class CreditosController extends Controller
         // Actualizar solo los campos que están presentes en la solicitud
         $item->nombre = $request->input('nombre', $item->nombre);
         $item->descripcion = $request->input('descripcion', $item->descripcion);
-        $item->cantidad = $request->input('cantidad', $item->cantidad);
         $item->titulo = $request->input('titulo', $item->titulo);
         $item->sub_titulo = $request->input('sub_titulo', $item->sub_titulo);
 
@@ -200,29 +170,12 @@ class CreditosController extends Controller
             // Obtener el archivo de la imagen
             $imagen = $request->file('imagen');
             // Generar un nombre único para la imagen
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             // Mover la imagen a la carpeta correspondiente
             $imagen->move("images/creditos/", $nombreImagen);
             // Asignar el nombre de la imagen al objeto
             $item->imagen = $nombreImagen;
         }
-
-        // Manejar la banner imagen
-        if ($request->file('banner_imagen')) {
-            // Eliminar la imagen del banner anterior si existe
-            if ($item->banner_imagen) {
-                Storage::delete('images/creditos/' . $item->banner_imagen);
-            }
-            // Obtener el archivo de la banner imagen
-            $bannerImagen = $request->file('banner_imagen');
-            // Generar un nombre único para la banner imagen
-            $nombreBannerImagen = time() . '_banner.png';
-            // Mover la banner imagen a la carpeta correspondiente
-            $bannerImagen->move("images/creditos/", $nombreBannerImagen);
-            // Asignar el nombre de la banner imagen al objeto
-            $item->banner_imagen = $nombreBannerImagen;
-        }
-
         // Guardar los cambios en el crédito
         $item->save();
 
@@ -293,9 +246,7 @@ class CreditosController extends Controller
             $defaultImage = asset('images/creditos/img_default.jpg'); // Cambia la ruta según tu estructura de archivos
 
             // Asignar la imagen si existe, de lo contrario, usar la imagen predeterminada
-            $item->imagen = $item->imagen ? asset('images/creditos/' . $item->imagen) : $defaultImage;
-            $item->banner_imagen = $item->banner_imagen ? asset('images/creditos/' . $item->banner_imagen) : $defaultImage;
-
+            $item->imagen = asset('images/creditos/' . $item->imagen);
             return $item;
         });
 

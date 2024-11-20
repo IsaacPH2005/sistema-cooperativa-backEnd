@@ -27,7 +27,7 @@ class EducacionFinancierasImg extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "imagen" => 'required|mimes:jpg,png,jpeg,gif,svg',
+            "imagen" => 'required|mimes:jpg,png,jpeg,gif,svg,webp|max:20480',
             "nombre" => "required",
         ]);
         $item = new EducacionFinancierasImagenes();
@@ -37,7 +37,7 @@ class EducacionFinancierasImg extends Controller
                 unlink('images/educacion_financieras_imagenes/' . $item->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension();
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/educacion_financieras_imagenes/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
@@ -70,7 +70,7 @@ class EducacionFinancierasImg extends Controller
         // Validar los datos de entrada
         $request->validate([
             'nombre' => 'required',
-            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg',
+            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg,webp|max:20480',
         ]);
 
         // Buscar el registro por ID
@@ -90,7 +90,7 @@ class EducacionFinancierasImg extends Controller
             }
             // Subir la nueva imagen
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension();
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/educacion_financieras_imagenes/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }

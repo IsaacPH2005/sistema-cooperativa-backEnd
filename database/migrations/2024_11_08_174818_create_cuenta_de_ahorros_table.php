@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('cuenta_de_ahorros', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
-            $table->text('descripcion');
-            $table->string('imagen');
+            $table->text('descripcion')->nullable();
+            $table->string('imagen')->nullable();
             $table->timestamps();
         });
     }

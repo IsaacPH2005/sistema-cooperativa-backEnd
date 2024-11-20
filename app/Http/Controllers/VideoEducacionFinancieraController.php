@@ -39,7 +39,7 @@ class VideoEducacionFinancieraController extends Controller
         $request->validate([
             'video' => 'required|file|mimes:mp4,avi,mov,wmv|max:102400',
             'descripcion_del_video' => 'required',
-            'portada' => 'required|image|mimes:png,jpg,jpeg,gif|max:102400'
+            'portada' => 'required|image|mimes:png,jpg,jpeg,gif,webp|max:20480'
         ]);
 
         // Crear un nuevo registro en la base de datos
@@ -47,7 +47,7 @@ class VideoEducacionFinancieraController extends Controller
         $item->descripcion_del_video = $request->descripcion_del_video;
         if ($request->file('portada')) {
             $portada = $request->file('portada');
-            $nombreportada = time() . '.' . $portada->getClientOriginalExtension();
+            $nombreportada = md5_file($portada->getPathname()) . '.' . $portada->getClientOriginalExtension();
             $portada->move('portadas/EducacionFinanciera', $nombreportada);
         }
         if ($request->file('video')) {
@@ -55,7 +55,7 @@ class VideoEducacionFinancieraController extends Controller
             $video = $request->file('video');
 
             // Generar un nombre único para la video
-            $nombrevideo = time() . '.' . $video->getClientOriginalExtension(); // Mantener la extensión original
+            $nombrevideo = md5_file($video->getPathname()) . '.' . $video->getClientOriginalExtension();
 
             // Mover la video a la carpeta correspondiente
             $video->move('videos/EducacionFinanciera/', $nombrevideo);
@@ -101,7 +101,7 @@ class VideoEducacionFinancieraController extends Controller
         $request->validate([
             'video' => 'nullable|file|mimes:mp4,avi,mov,wmv|max:102400', // Hacerlo opcional
             'descripcion_del_video' => 'nullable',
-            'portada' => 'nullable|image|mimes:png,jpg,jpeg,gif|max:102400'
+            'portada' => 'nullable|image|mimes:png,jpg,jpeg,gif,webp|max:20480'
         ]);
 
         // Buscar el video por ID
@@ -114,7 +114,7 @@ class VideoEducacionFinancieraController extends Controller
         if ($request->file('portada')) {
             // Obtener el archivo de la portada
             $portada = $request->file('portada');
-            $nombreportada = time() . '.' . $portada->getClientOriginalExtension(); // Mantener la extensión original
+            $nombreportada = md5_file($portada->getPathname()) . '.' . $portada->getClientOriginalExtension();
             $portada->move('portadas/EducacionFinanciera/', $nombreportada);
 
             $item->portada = $nombreportada;
@@ -126,7 +126,7 @@ class VideoEducacionFinancieraController extends Controller
             $video = $request->file('video');
 
             // Generar un nombre único para la video
-            $nombrevideo = time() . '.' . $video->getClientOriginalExtension(); // Mantener la extensión original
+            $nombrevideo = md5_file($video->getPathname()) . '.' . $video->getClientOriginalExtension();
 
             // Mover la video a la carpeta correspondiente
             $video->move('videos/EducacionFinanciera/', $nombrevideo);

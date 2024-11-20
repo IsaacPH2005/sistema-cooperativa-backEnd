@@ -37,7 +37,7 @@ class CodigoEticaController extends Controller
         // Manejar la actualización de la pdf
         if ($request->file('pdf')) {
             $pdf = $request->file('pdf');
-            $nombrepdf = time() . '.' . $pdf->getClientOriginalExtension(); // Usar la extensión original
+            $nombrepdf = md5_file($pdf->getPathname()) . '.' . $pdf->getClientOriginalExtension();
             $pdf->move("pdfs/codigo_etica/", $nombrepdf);
             $item->pdf = $nombrepdf; // Asignar la nueva pdf
         }

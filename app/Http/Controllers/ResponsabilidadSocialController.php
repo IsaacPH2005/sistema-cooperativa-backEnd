@@ -30,9 +30,9 @@ class ResponsabilidadSocialController extends Controller
         $request->validate([
             'titulo' => 'required',
             'subtitulo' => 'required',
-            "pdf_1" => 'required|mimes:pdf',
-            "pdf_2" => 'required|mimes:pdf',
-            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            "pdf_1" => 'required|mimes:pdf|max:40960',
+            "pdf_2" => 'required|mimes:pdf|max:40960',
+            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg,webp|max:20480',
         ]);
         $item = new ResponsabilidadSocial();
         $item->titulo = $request->input('titulo');
@@ -57,7 +57,7 @@ class ResponsabilidadSocialController extends Controller
             }
             // Subir el nuevo PDF
             $pdf_1 = $request->file('pdf_1');
-            $nombrePdf = time() . '.' . $pdf_1->getClientOriginalExtension();
+            $nombrePdf = md5_file($pdf_1->getPathname()) . '.' . $pdf_1->getClientOriginalExtension();
             $pdf_1->move("pdfs/responsabilidad_sociales/", $nombrePdf);
             $item->pdf_1 = $nombrePdf;
         }
@@ -69,7 +69,7 @@ class ResponsabilidadSocialController extends Controller
             }
             // Subir el nuevo PDF
             $pdf = $request->file('pdf_2');
-            $nombrePdf = time() . '.' . $pdf->getClientOriginalExtension();
+            $nombrePdf = md5_file($pdf->getPathname()) . '.' . $pdf->getClientOriginalExtension();
             $pdf->move("pdfs/responsabilidad_sociales/", $nombrePdf);
             $item->pdf_2 = $nombrePdf;
         }
@@ -107,9 +107,9 @@ class ResponsabilidadSocialController extends Controller
         $request->validate([
             'titulo' => 'required',
             'subtitulo' => 'required',
-            "pdf_1" => 'nullable|mimes:pdf|max:10240',
-            "pdf_2" => 'nullable|mimes:pdf|max:10240',
-            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            "pdf_1" => 'nullable|mimes:pdf|max:40960',
+            "pdf_2" => 'nullable|mimes:pdf|max:40960',
+            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg,webp|max:20480',
         ]);
 
         // Buscar el registro por ID
@@ -130,9 +130,9 @@ class ResponsabilidadSocialController extends Controller
                 unlink('images/responsabilidad_sociales/' . $item->imagen_pdf);
             }
             // Subir la nueva imagen
-            $imagen = $request->file('imagen_pdf');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension();
-            $imagen->move("images/responsabilidad_sociales/", $nombreImagen);
+            $imagen_pdf = $request->file('imagen_pdf');
+            $nombreImagen = md5_file($imagen_pdf->getPathname()) . '.' . $imagen_pdf->getClientOriginalExtension();
+            $imagen_pdf->move("images/responsabilidad_sociales/", $nombreImagen);
             $item->imagen_pdf = $nombreImagen;
         }
 
@@ -144,7 +144,7 @@ class ResponsabilidadSocialController extends Controller
             }
             // Subir el nuevo PDF
             $pdf_1 = $request->file('pdf_1');
-            $nombrePdf1 = time() . '.' . $pdf_1->getClientOriginalExtension();
+            $nombrePdf1 = md5_file($pdf_1->getPathname()) . '.' . $pdf_1->getClientOriginalExtension();
             $pdf_1->move("pdfs/responsabilidad_sociales/", $nombrePdf1);
             $item->pdf_1 = $nombrePdf1;
         }
@@ -157,7 +157,7 @@ class ResponsabilidadSocialController extends Controller
             }
             // Subir el nuevo PDF
             $pdf_2 = $request->file('pdf_2');
-            $nombrePdf2 = time() . '.' . $pdf_2->getClientOriginalExtension();
+            $nombrePdf2 = md5_file($pdf_2->getPathname()) . '.' . $pdf_2->getClientOriginalExtension();
             $pdf_2->move("pdfs/responsabilidad_sociales/", $nombrePdf2);
             $item->pdf_2 = $nombrePdf2;
         }

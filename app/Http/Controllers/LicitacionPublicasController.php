@@ -23,8 +23,8 @@ class LicitacionPublicasController extends Controller
     {
         $request->validate([
             "nombre" => "required",
-            "pdf" => "required",
-            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            "pdf" => "required|mimes:pdf|max:40960",
+            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:20480',
         ]);
         $item = new LicitacionPublicas();
         $item->nombre = $request->nombre;
@@ -82,8 +82,8 @@ class LicitacionPublicasController extends Controller
         // Validar los datos de entrada
         $request->validate([
             'nombre' => 'required',
-            "pdf" => 'nullable|mimes:pdf|max:10240',
-            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            "pdf" => 'nullable|mimes:pdf|max:40960',
+            "imagen_pdf" => 'nullable|mimes:jpg,png,jpeg,gif,svg,webp|max:20480',
         ]);
     
         // Buscar el registro por ID
@@ -103,7 +103,7 @@ class LicitacionPublicasController extends Controller
             }
             // Subir la nueva imagen
             $imagen = $request->file('imagen_pdf');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension();
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/licitacion_publica/", $nombreImagen);
             $item->imagen_pdf = $nombreImagen;
         }
@@ -116,7 +116,7 @@ class LicitacionPublicasController extends Controller
             }
             // Subir el nuevo PDF
             $pdf = $request->file('pdf');
-            $nombrePdf1 = time() . '.' . $pdf->getClientOriginalExtension();
+            $nombrePdf1 = md5_file($pdf->getPathname()) . '.' . $pdf->getClientOriginalExtension();
             $pdf->move("pdfs/licitacion_publica/", $nombrePdf1);
             $item->pdf = $nombrePdf1;
         }

@@ -35,13 +35,13 @@ class CooperativaInfoController extends Controller
         $request->validate([
             "titulo" => "required",
             "descripcion" => "nullable",
-            "imagen" => "nullable|image|mimes:jpeg,png,jpg",
+            "imagen" => "nullable|image|mimes:jpeg,png,jpg|max:20480",
         ]);
         $item->titulo = $request->titulo;
         // Manejar la actualización de la imagen
         if ($request->file('imagen')) {
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/cooperativa_info/", $nombreImagen);
             $item->imagen = $nombreImagen; // Asignar la nueva imagen
         }

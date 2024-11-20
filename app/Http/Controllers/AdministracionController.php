@@ -20,12 +20,7 @@ class AdministracionController extends Controller
                     ->orWhere('apellido', 'LIKE', '%' . $search . '%');
             });
         }
-        $items = $items->orderBy("id", "desc")->paginate(15);
-        // Mapear los items para agregar las URLs de las imágenes y PDFs
-        $items->getCollection()->transform(function ($item) {
-            $item->foto = asset('images/administracion_personal/' . $item->foto);
-            return $item;
-        });
+        $items = $items->orderBy("id", "desc")->paginate(5);
         return response()->json(["mensaje" => "datos cargados", "datos" => $items]);
     }
 
@@ -38,26 +33,11 @@ class AdministracionController extends Controller
             "nombre" => 'required',
             "apellido" => 'required',
             "cargo" => 'required',
-            "foto" => 'required|image|mimes:jpeg,png,jpg',
         ]);
         $item = new administraciones();
         $item->nombre = $request->nombre;
         $item->apellido = $request->apellido;
         $item->cargo = $request->cargo;
-        if ($request->file('foto')) {
-            // Verificar si hay una foto existente antes de guardar la nueva
-            if ($item->exists && $item->foto) {
-                $existingImagePath = 'images/administracion_personal/' . $item->foto;
-                if (file_exists($existingImagePath)) {
-                    unlink($existingImagePath);
-                }
-            }
-    
-            $imagen = $request->file('foto');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
-            $imagen->move("images/administracion_personal/", $nombreImagen);
-            $item->foto = $nombreImagen;
-        }
         $item->save();
         return response()->json(['mensaje' => "Registro exitoso", "datos" => $item], 200);
     }
@@ -73,9 +53,6 @@ class AdministracionController extends Controller
         if (!$item) {
             return response()->json(["mensaje" => "Registro no encontrado"], 404);
         }
-        // Agregar las URLs de la imagen y el PDF
-        $item->foto = asset('images/administracion_personal/' . $item->foto);
-
         // Retornar la respuesta JSON con el registro encontrado
         return response()->json(["mensaje" => "Registro encontrado", "datos" => $item], 200);
     }
@@ -89,7 +66,6 @@ class AdministracionController extends Controller
             "nombre" => 'required',
             "apellido" => 'required',
             "cargo" => 'required',
-            "foto" => 'image|mimes:jpeg,png,jpg',
         ]);
         $item = administraciones::find($id);
         if (!$item) {
@@ -98,18 +74,6 @@ class AdministracionController extends Controller
         $item->nombre = $request->nombre;
         $item->apellido = $request->apellido;
         $item->cargo = $request->cargo;
-        // Manejar la actualización de la imagen
-        if ($request->hasFile('foto')) {
-            // Eliminar la imagen anterior si existe
-            if ($item->foto) {
-                unlink('images/administracion_personal/' . $item->foto);
-            }
-            // Subir la nueva imagen
-            $imagen = $request->file('foto');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension();
-            $imagen->move("images/administracion_personal/", $nombreImagen);
-            $item->foto = $nombreImagen;
-        }
         $item->save();
         // Retornar la respuesta JSON con la información actualizada
         return response()->json(['mensaje' => "Registro actualizado exitosamente", "datos" => $item], 200);
@@ -130,11 +94,6 @@ class AdministracionController extends Controller
     public function indexActivos()
     {
         $items = administraciones::where('estado', true)->get();
-        // Mapear los items para agregar las URLs de las imágenes y PDFs
-        $items->transform(function ($item) {
-            $item->foto = asset('images/administracion_personal/' . $item->foto);
-            return $item;
-        });
         return response()->json(["mensaje" => "Datos activos cargados", "datos" => $items]);
     }
 }

@@ -29,7 +29,7 @@ class CarruselImagensController extends Controller
     {
         $request->validate([
             "titulo" => "required",
-            "imagen" => "mimes:png,jpg,jpeg"
+            "imagen" => "mimes:png,jpg,jpeg,webp|max:20480"
         ]);
         $item = new carrusel_imagenes();
         $item->titulo = $request->titulo;
@@ -39,7 +39,7 @@ class CarruselImagensController extends Controller
                 unlink('img/img_carrusel/' . $item->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("img/img_carrusel/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
@@ -75,7 +75,7 @@ class CarruselImagensController extends Controller
     {
         $request->validate([
             "titulo" => "required",
-            "imagen" => "mimes:png,jpg,jpeg"
+            "imagen" => "mimes:png,jpg,jpeg,webp|max:20480"
         ]);
         $item = carrusel_imagenes::find($id);
         $item->titulo = $request->titulo;
@@ -85,7 +85,7 @@ class CarruselImagensController extends Controller
                 unlink('img/img_carrusel/' . $item->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("img/img_carrusel/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }

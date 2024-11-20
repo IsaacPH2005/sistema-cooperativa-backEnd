@@ -12,14 +12,7 @@ class MemoriasInstitucionalController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->input('search');
         $items = memorias_institucionales::query();
-        if ($search) {
-            $items->where(function ($query) use ($search) {
-                $query->where('titulo', 'LIKE', '%' . $search . '%')
-                    ->orWhere('descripcion', 'LIKE', '%' . $search . '%');
-            });
-        }
         $items = $items->orderBy("id", "desc")->paginate(15);
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->getCollection()->transform(function ($item) {
@@ -37,9 +30,9 @@ class MemoriasInstitucionalController extends Controller
     {
         $request->validate([
             "titulo" => 'required|string|max:255',
-            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg',
+            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:20480',
             'pdf' => 'required|mimes:pdf|max:40960',
-            "fecha" => 'nullable|date',
+            'fecha' => 'nullable|date|after:today', // La fecha debe ser después de hoy
             "descripcion" => 'nullable|string',
         ]);
 
@@ -53,7 +46,7 @@ class MemoriasInstitucionalController extends Controller
                 unlink('images/memorias_institucionales/' . $memoria->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/memorias_institucionales/", $nombreImagen);
             $memoria->imagen = $nombreImagen;
         }
@@ -63,7 +56,7 @@ class MemoriasInstitucionalController extends Controller
                 unlink('pdfs/memorias_institucionales/' . $memoria->pdf);
             }
             $pdf = $request->file('pdf');
-            $nombrePdf = time() . '.pdf';
+            $nombrePdf = md5_file($pdf->getPathname()) . '.' . $pdf->getClientOriginalExtension();
             $pdf->move("pdfs/memorias_institucionales/", $nombrePdf);
             $memoria->pdf = $nombrePdf;
         }
@@ -96,9 +89,10 @@ class MemoriasInstitucionalController extends Controller
     // Validar los datos de entrada
     $request->validate([
         "titulo" => 'required|string|max:255',
-        "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg',
+        "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:20480',
         "pdf" => 'nullable|mimes:pdf|max:40960',
         "descripcion" => 'nullable|string',
+        'fecha' => 'nullable|date|after:today', // La fecha debe ser después de hoy
     ]);
 
     // Buscar el registro por ID
@@ -111,7 +105,7 @@ class MemoriasInstitucionalController extends Controller
 
     // Actualizar los campos
     $memoria->titulo = $request->input('titulo');
-    $memoria->fecha = date('Y-m-d', strtotime($request->input('fecha')));
+    $memoria->fecha = $request->input('fecha');
     $memoria->descripcion = $request->input('descripcion');
 
     // Manejar la actualización de la imagen
@@ -122,7 +116,7 @@ class MemoriasInstitucionalController extends Controller
         }
         // Subir la nueva imagen
         $imagen = $request->file('imagen');
-        $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension();
+        $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
         $imagen->move("images/memorias_institucionales/", $nombreImagen);
         $memoria->imagen = $nombreImagen;
     }
@@ -135,7 +129,7 @@ class MemoriasInstitucionalController extends Controller
         }
         // Subir el nuevo PDF
         $pdf = $request->file('pdf');
-        $nombrePdf = time() . '.' . $pdf->getClientOriginalExtension();
+        $nombrePdf = md5_file($pdf->getPathname()) . '.' . $pdf->getClientOriginalExtension();
         $pdf->move("pdfs/memorias_institucionales/", $nombrePdf);
         $memoria->pdf = $nombrePdf;
     }

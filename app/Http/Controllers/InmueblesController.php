@@ -32,7 +32,7 @@ class InmueblesController extends Controller
             'datos' => 'required|string',
             'fecha' => 'required|date',
             'imagenes' => 'required|array', // Validate that imagenes is an array
-            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validate each image
+            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:20480', // Validate each image
         ]);
 
         try {
@@ -99,7 +99,7 @@ class InmueblesController extends Controller
             'datos' => 'required|string',
             'fecha' => 'required|date',
             'imagenes' => 'nullable|array', // Validate that imagenes is an array
-            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validate each image
+            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:20480', // Validate each image
         ]);
 
         try {

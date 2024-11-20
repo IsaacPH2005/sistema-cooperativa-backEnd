@@ -28,7 +28,7 @@ class PaginaBannersController extends Controller
     {
         $request->validate([
             "pagina_id" => 'required|unique:paginas_banners,pagina_id',
-            "imagen" => 'required|mimes:jpg,png,jpeg,gif,svg|max:2048'
+            "imagen" => 'required|mimes:jpg,png,jpeg,gif,svg,webp|max:20480'
         ]);
 
         $item = new paginas_banners();
@@ -40,7 +40,7 @@ class PaginaBannersController extends Controller
                 unlink('images/paginas_banners/' . $item->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/paginas_banners/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
@@ -68,6 +68,7 @@ class PaginaBannersController extends Controller
     {
         $request->validate([
             "pagina_id" => 'sometimes|required|unique:paginas_banners,pagina_id,' . $id . ',id',
+            "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg,webp|max:20480'
         ]);
 
         $item = paginas_banners::find($id);
@@ -81,7 +82,7 @@ class PaginaBannersController extends Controller
                 Storage::delete('public/images/paginas_banners/' . $item->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/paginas_banners/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }

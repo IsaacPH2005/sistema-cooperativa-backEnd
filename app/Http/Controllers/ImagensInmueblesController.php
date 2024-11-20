@@ -22,7 +22,7 @@ class ImagensInmueblesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "imagen" => "required|image|mimes:jpeg,png,jpg",
+            "imagen" => "required|image|mimes:jpeg,png,jpg,webp|max:20480",
         ]);
 
         
@@ -32,7 +32,7 @@ class ImagensInmueblesController extends Controller
                 unlink('images/bienes_inmuebles/' . $item->imagen);
             }
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.png';
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/bienes_inmuebles/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }

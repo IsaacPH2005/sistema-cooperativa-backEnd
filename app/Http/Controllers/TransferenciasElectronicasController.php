@@ -32,7 +32,7 @@ class TransferenciasElectronicasController extends Controller
     {
         $request->validate([
             "nombre" => "required",
-            "imagen" => "required|image|mimes:jpeg,png,jpg",
+            "imagen" => "required|image|mimes:jpeg,png,jpg,webp|max:20480",
         ]);
         $item = new Transferencias_electronicas();
         $item->nombre = $request->nombre;
@@ -47,7 +47,7 @@ class TransferenciasElectronicasController extends Controller
             }
     
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/transferencias_electronicas/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
@@ -85,7 +85,7 @@ class TransferenciasElectronicasController extends Controller
         }
         $request->validate([
             "nombre" => "required",
-            "imagen" => "image|mimes:jpeg,png,jpg",
+            "imagen" => "image|mimes:jpeg,png,jpg,webp|max:20480",
         ]);
         $item->nombre = $request->nombre;
         $item->descripcion = $request->descripcion;
@@ -99,7 +99,7 @@ class TransferenciasElectronicasController extends Controller
             }
     
             $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
+            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/transferencias_electronicas/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
