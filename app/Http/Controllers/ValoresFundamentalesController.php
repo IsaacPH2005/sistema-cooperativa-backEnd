@@ -13,11 +13,15 @@ class ValoresFundamentalesController extends Controller
     public function index()
     {
         $items = ValoresFundamentales::orderBy('id', 'desc')->paginate(5);
-                // Mapear los items para agregar las URLs de las imágenes y PDFs
-                $items->getCollection()->transform(function ($item) {
-                    $item->imagen = asset('images/valores_fundamentales/' . $item->imagen);
-                    return $item;
-                });
+        $items->transform(function ($item) {
+            // Verificar si la imagen existe y no está vacía
+            if (!empty($item->imagen)) {
+                $item->imagen = asset('images/valores_fundamentales/' . $item->imagen);
+            } else {
+                $item->imagen = null; // O puedes omitir esta línea si no quieres incluir la propiedad
+            }
+            return $item;
+        });
         return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
     }
 
@@ -28,8 +32,8 @@ class ValoresFundamentalesController extends Controller
     {
         $request->validate([
             "titulo" => "required",
-            "descripcion" => "required",
-            "imagen" => "required|image|mimes:jpeg,png,jpg|max:20480",
+            "descripcion" => "nullable",
+            "imagen" => "nullable|image|mimes:jpeg,png,jpg|max:20480",
         ]);
 
         $item = new ValoresFundamentales();
@@ -43,7 +47,7 @@ class ValoresFundamentalesController extends Controller
                     unlink($existingImagePath);
                 }
             }
-    
+
             $imagen = $request->file('imagen');
             $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
             $imagen->move("images/valores_fundamentales/", $nombreImagen);
@@ -79,7 +83,7 @@ class ValoresFundamentalesController extends Controller
         }
         $request->validate([
             "titulo" => "required",
-            "descripcion" => "required",
+            "descripcion" => "nullable",
             "imagen" => "nullable|image|mimes:jpeg,png,jpg,webp|max:20480",
         ]);
         $item->titulo = $request->titulo;
@@ -92,7 +96,7 @@ class ValoresFundamentalesController extends Controller
                     unlink($existingImagePath);
                 }
             }
-    
+
             $imagen = $request->file('imagen');
             $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/valores_fundamentales/", $nombreImagen);
@@ -119,9 +123,13 @@ class ValoresFundamentalesController extends Controller
     public function indexActivos()
     {
         $items = ValoresFundamentales::where('estado', true)->get();
-        // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->transform(function ($item) {
-            $item->imagen = asset('images/valores_fundamentales/' . $item->imagen);
+            // Verificar si la imagen existe y no está vacía
+            if (!empty($item->imagen)) {
+                $item->imagen = asset('images/valores_fundamentales/' . $item->imagen);
+            } else {
+                $item->imagen = null; // O puedes omitir esta línea si no quieres incluir la propiedad
+            }
             return $item;
         });
         return response()->json(["mensaje" => "Datos activos cargados", "datos" => $items]);

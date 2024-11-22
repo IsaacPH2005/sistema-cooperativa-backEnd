@@ -25,6 +25,7 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstadosFinancierosController;
 use App\Http\Controllers\ImagensInmueblesController;
 use App\Http\Controllers\IndicadoresFinancierosController;
+use App\Http\Controllers\InformacionImportanteController;
 use App\Http\Controllers\InfoSerSocioController;
 use App\Http\Controllers\InmueblesController;
 use App\Http\Controllers\LicitacionPublicasController;
@@ -322,11 +323,13 @@ Route::group(["middleware" => "auth:sanctum"], function () {
   // Calificacion de riesgo
   Route::get('/calificacion-de-riesgo', [PdfCalificacionDeRiesgoController::class, 'index']);
   Route::post('/calificacion-de-riesgo/edicion', [PdfCalificacionDeRiesgoController::class, 'update']);
-        // Tabla calificacion de riesgo
-        Route::get('/calificacion-de-riesgo-tabla', [TablaCalificacionDeRiesgoController::class, 'index']);
-        Route::post('/calificacion-de-riesgo-tabla/edicion', [TablaCalificacionDeRiesgoController::class, 'store']);
-        Route::delete('/calificacion-de-riesgo-tabla-estado/{id}', [TablaCalificacionDeRiesgoController::class, 'estado']);
-      
+  // Tabla calificacion de riesgo
+  Route::get('/calificacion-de-riesgo-tabla', [TablaCalificacionDeRiesgoController::class, 'index']);
+  Route::post('/calificacion-de-riesgo-tabla/edicion', [TablaCalificacionDeRiesgoController::class, 'store']);
+  Route::delete('/calificacion-de-riesgo-tabla-estado/{id}', [TablaCalificacionDeRiesgoController::class, 'estado']);
+  //informacionImportante img
+  Route::get('/info-importante', [InformacionImportanteController::class, 'index']);
+  Route::post('/info-importante/edicion', [InformacionImportanteController::class, 'update']);
 
   Route::get('/user', [UserController::class, 'showAuthenticatedUser']); // Para mostrar los datos del usuario
   Route::put('/user', [UserController::class, 'update']); // Para actualizar los datos del usuario
@@ -416,6 +419,8 @@ Route::get('/tasas-tarifas-activo', [TasasYTarifaController::class, 'index2']);
 Route::get('/calificacion-de-riesgo-activo', [PdfCalificacionDeRiesgoController::class, 'index2']);
 // tabla calificacion de riesgo
 Route::get('/calificacion-de-riesgo-tabla-activo', [TablaCalificacionDeRiesgoController::class, 'index2']);
+// info importante activo
+Route::get('/info-importante-activo', [InformacionImportanteController::class, 'index2']);
 Route::get('/dpf-card-activo', [DpfCardController::class, 'index2']);
 Route::get('/principios-text', [PrincipiosTextController::class, 'lecturaitem']);
 

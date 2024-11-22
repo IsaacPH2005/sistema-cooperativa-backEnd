@@ -37,7 +37,7 @@ class VideoEducacionFinancieraController extends Controller
     {
         // Validar el archivo
         $request->validate([
-            'video' => 'required|file|mimes:mp4,avi,mov,wmv|max:102400',
+            'video' => 'required|file|mimes:mp4,avi,mov,wmv|max:204800',
             'descripcion_del_video' => 'required',
             'portada' => 'required|image|mimes:png,jpg,jpeg,gif,webp|max:20480'
         ]);
@@ -49,6 +49,7 @@ class VideoEducacionFinancieraController extends Controller
             $portada = $request->file('portada');
             $nombreportada = md5_file($portada->getPathname()) . '.' . $portada->getClientOriginalExtension();
             $portada->move('portadas/EducacionFinanciera', $nombreportada);
+            $item->portada = $nombreportada;
         }
         if ($request->file('video')) {
             // Obtener el archivo de la video
@@ -99,7 +100,7 @@ class VideoEducacionFinancieraController extends Controller
     {
         // Validar el archivo (opcional si no se sube un nuevo video)
         $request->validate([
-            'video' => 'nullable|file|mimes:mp4,avi,mov,wmv|max:102400', // Hacerlo opcional
+            'video' => 'nullable|file|mimes:mp4,avi,mov,wmv|max:204800', // Hacerlo opcional
             'descripcion_del_video' => 'nullable',
             'portada' => 'nullable|image|mimes:png,jpg,jpeg,gif,webp|max:20480'
         ]);

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RedesSociales;
+use App\Models\WebRedesSocialesCoop;
 use Illuminate\Http\Request;
 
 class RedesSocialesController extends Controller
@@ -13,7 +13,7 @@ class RedesSocialesController extends Controller
     public function index()
     {
         // Obtener todas las redes sociales con la información de la empresa relacionada
-        $redesSociales = RedesSociales::orderBy('id', 'desc')->paginate(10);
+        $redesSociales = WebRedesSocialesCoop::orderBy('id', 'desc')->paginate(10);
 
         return response()->json(
             [
@@ -41,7 +41,7 @@ class RedesSocialesController extends Controller
         ]);
 
         // Crear una nueva red social
-        $redSocial = new RedesSociales();
+        $redSocial = new WebRedesSocialesCoop();
         $redSocial->nombre = $request->nombre;
         $redSocial->logo = $request->logo;
         $redSocial->url = $request->url;
@@ -64,7 +64,7 @@ class RedesSocialesController extends Controller
     public function show(string $id)
     {
         // Obtener una red social específica
-        $redSocial = RedesSociales::find($id);
+        $redSocial = WebRedesSocialesCoop::find($id);
 
         // Verificar si se encontró el registro
         if ($redSocial) {
@@ -84,28 +84,17 @@ class RedesSocialesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-           // Validar la solicitud
-           $request->validate([
-            "nombre" => "required|max:50|unique:web_redes_sociales,nombre," . $id,
+
+        // Validar la solicitud
+        $request->validate([
+            'nombre' => 'required|unique:web_redes_sociales_coops,nombre,' . $id,
             'logo' => [
-            'required',
-            'regex:/^fa-[a-z-]+(\s+fa-[a-z-]+)*$/'
-        ],
+                'required',
+            ],
             "url" => "nullable|url|max:250",
         ]);
-
-
-
-        // Crear una nueva red social
-        $redSocial = RedesSociales::find($id);
-
-        // Verificar si se encontró el registro
-        if (!$redSocial) {
-            return response()->json([
-                "mensaje" => "Red social no encontrada"
-            ], 404);
-        }
-
+        // Asegúrate de que estás accediendo a la tabla correcta
+        $redSocial = WebRedesSocialesCoop::where('id', $id)->first();
         // Actualizar los campos de la red social
         $redSocial->nombre = $request->nombre;
         $redSocial->logo = $request->logo;
@@ -129,25 +118,25 @@ class RedesSocialesController extends Controller
      */
     public function destroy(string $id)
     {
-          // Realizar un soft delete (cambiar el estado a is_deleted)
-          $redSocial = RedesSociales::find($id);
+        // Realizar un soft delete (cambiar el estado a is_deleted)
+        $redSocial = WebRedesSocialesCoop::find($id);
 
-          if (!$redSocial) {
-              return response()->json(["mensaje" => "Red social no encontrada"], 404);
-          }
+        if (!$redSocial) {
+            return response()->json(["mensaje" => "Red social no encontrada"], 404);
+        }
 
-          $redSocial->estado = !$redSocial->estado; // Cambia el estado del campo estado
+        $redSocial->estado = !$redSocial->estado; // Cambia el estado del campo estado
 
-          if ($redSocial->save()) {
-              return response()->json(["mensaje" => "Estado modificado", "datos" => $redSocial], 202);
-          } else {
-              return response()->json(["mensaje" => "No se pudo modificar el estado"], 422);
-          }
+        if ($redSocial->save()) {
+            return response()->json(["mensaje" => "Estado modificado", "datos" => $redSocial], 202);
+        } else {
+            return response()->json(["mensaje" => "No se pudo modificar el estado"], 422);
+        }
     }
     public function redesSocialesActivo()
     {
         // Obtener todas las redes sociales no eliminadas
-        $redesSociales = RedesSociales::where('estado', true)->get();
+        $redesSociales = WebRedesSocialesCoop::where('estado', true)->get();
         return response()->json(
             [
                 "mensaje" => "Datos cargados",

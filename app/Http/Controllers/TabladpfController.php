@@ -11,10 +11,10 @@ class TabladpfController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $items = TablaDpfs::paginate(10);
-        return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
-    }
+{
+    $items = TablaDpfs::paginate(10);
+    return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
+}
 
     /**
      * Store a newly created resource in storage.
@@ -30,6 +30,7 @@ class TabladpfController extends Controller
         $item->plazo = $request->plazo;
         $item->interes_bs = $request->interes_bs;
         $item->interes_usd = $request->interes_usd;
+
         $item->save();
         return response()->json(["mensaje" => "Datos creados", "datos" => $item], 201);
     }

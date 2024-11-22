@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('valores_fundamentales', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
-            $table->string('descripcion');
-            $table->string('imagen');
+            $table->string('descripcion')->nullable();
+            $table->string('imagen')->nullable();
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

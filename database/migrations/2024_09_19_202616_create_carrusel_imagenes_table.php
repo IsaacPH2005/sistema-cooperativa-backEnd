@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('carrusel_imagenes', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
+            $table->string('titulo')->nullable();
             $table->text('descripcion')->nullable();
             $table->string('imagen', 50)->nullable();
             $table->boolean('estado')->default(false);

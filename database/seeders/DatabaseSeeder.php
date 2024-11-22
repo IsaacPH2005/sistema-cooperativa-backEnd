@@ -41,5 +41,6 @@ class DatabaseSeeder extends Seeder
         $this->call(class: [CaracteristicasDpfSeeder::class]);
         $this->call(class: [RequisitosDpfSeeder::class]);
         $this->call(class: [BeneficiosDpfSeeder::class]);
+        $this->call(class: [InformacionImportanteSeeder::class]);
     }
 }

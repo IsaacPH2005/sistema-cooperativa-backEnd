@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('nombre_completo');
             $table->text('rol')->nullable();
             $table->text('testimonio');
-            $table->string('estado')->default(true);
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->text('imagen');
             $table->string('nombre');
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

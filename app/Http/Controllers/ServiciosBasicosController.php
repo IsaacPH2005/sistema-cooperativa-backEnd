@@ -21,8 +21,13 @@ class ServiciosBasicosController extends Controller
         }
         $items = $items->orderBy("id", "desc")->paginate(15);
         // Mapear los items para agregar las URLs de las imágenes y PDFs
-        $items->getCollection()->transform(function ($item) {
-            $item->imagen = asset('images/servicios_basicos/' . $item->imagen);
+        $items->transform(function ($item) {
+            // Verificar si la imagen existe y no está vacía
+            if (!empty($item->imagen)) {
+                $item->imagen = asset('images/servicios_basicos/' . $item->imagen);
+            } else {
+                $item->imagen = null; // O puedes omitir esta línea si no quieres incluir la propiedad
+            }
             return $item;
         });
         return response()->json(["mensaje" => "datos cargados", "datos" => $items]);
@@ -35,7 +40,7 @@ class ServiciosBasicosController extends Controller
     {
         $request->validate([
             "nombre" => "required",
-            "imagen" => "required|image|mimes:jpeg,png,jpg,webp||max:20480",
+            "imagen" => "nullable|image|mimes:jpeg,png,jpg,webp|max:20480",
         ]);
         $item = new servicios();
         $item->nombre = $request->nombre;
@@ -48,7 +53,7 @@ class ServiciosBasicosController extends Controller
                     unlink($existingImagePath);
                 }
             }
-    
+
             $imagen = $request->file('imagen');
             $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/servicios_basicos/", $nombreImagen);
@@ -88,7 +93,7 @@ class ServiciosBasicosController extends Controller
         }
         $request->validate([
             "nombre" => "required",
-            "imagen" => "image|mimes:jpeg,png,jpg,webp||max:20480",
+            "imagen" => "nullable|image|mimes:jpeg,png,jpg,webp||max:20480",
         ]);
         $item->nombre = $request->nombre;
         $item->descripcion = $request->descripcion;
@@ -100,7 +105,7 @@ class ServiciosBasicosController extends Controller
                     unlink($existingImagePath);
                 }
             }
-    
+
             $imagen = $request->file('imagen');
             $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
             $imagen->move("images/servicios_basicos/", $nombreImagen);
@@ -129,7 +134,12 @@ class ServiciosBasicosController extends Controller
         $items = servicios::where('estado', true)->get();
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->transform(function ($item) {
-            $item->imagen = asset('images/servicios_basicos/' . $item->imagen);
+            // Verificar si la imagen existe y no está vacía
+            if (!empty($item->imagen)) {
+                $item->imagen = asset('images/servicios_basicos/' . $item->imagen);
+            } else {
+                $item->imagen = null; // O puedes omitir esta línea si no quieres incluir la propiedad
+            }
             return $item;
         });
         return response()->json(["mensaje" => "Datos activos cargados", "datos" => $items]);

@@ -28,8 +28,8 @@ class CarruselImagensController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "titulo" => "required",
-            "imagen" => "mimes:png,jpg,jpeg,webp|max:20480"
+            "titulo" => "nullable",
+            "imagen" => "required|mimes:png,jpg,jpeg,webp|max:20480"
         ]);
         $item = new carrusel_imagenes();
         $item->titulo = $request->titulo;
@@ -74,8 +74,8 @@ class CarruselImagensController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            "titulo" => "required",
-            "imagen" => "mimes:png,jpg,jpeg,webp|max:20480"
+            "titulo" => "nullable",
+            "imagen" => "required|mimes:png,jpg,jpeg,webp|max:20480"
         ]);
         $item = carrusel_imagenes::find($id);
         $item->titulo = $request->titulo;

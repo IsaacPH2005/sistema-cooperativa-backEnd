@@ -28,6 +28,7 @@ class EmpresaController extends Controller
             if ($empresa->img_mision) {
                 $empresa->img_mision = asset('images/empresa/' . $empresa->img_mision);
             }
+            
             return response()->json($empresa, 200);
         } catch (\Throwable $e) {
             // Registrar el error para depuración

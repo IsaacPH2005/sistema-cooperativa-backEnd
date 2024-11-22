@@ -14,7 +14,7 @@ class RequerimientosSerSocioController extends Controller
      */
     public function index()
     {
-        $items = OpcionesDeSerSocios::orderBy('id', 'desc')->with('requerimientos')->paginate(5);
+        $items = OpcionesDeSerSocios::orderBy('id', 'desc')->with('requerimientos')->get();
         return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
     }
 

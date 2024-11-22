@@ -49,8 +49,6 @@ class CreditosController extends Controller
             $item = new creditos();
             $item->nombre = $request->nombre;
             $item->descripcion = $request->descripcion;
-            $item->titulo = $request->titulo;
-            $item->sub_titulo = $request->sub_titulo;
             if ($request->file('imagen')) {
                 // Eliminar la imagen anterior si existe
                 if ($item->imagen) {
@@ -158,8 +156,6 @@ class CreditosController extends Controller
         // Actualizar solo los campos que están presentes en la solicitud
         $item->nombre = $request->input('nombre', $item->nombre);
         $item->descripcion = $request->input('descripcion', $item->descripcion);
-        $item->titulo = $request->input('titulo', $item->titulo);
-        $item->sub_titulo = $request->input('sub_titulo', $item->sub_titulo);
 
         // Manejar la imagen
         if ($request->file('imagen')) {

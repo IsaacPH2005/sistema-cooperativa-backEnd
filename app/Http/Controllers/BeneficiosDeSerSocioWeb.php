@@ -12,7 +12,7 @@ class BeneficiosDeSerSocioWeb extends Controller
      */
     public function index()
     {
-        $items = BeneficiosDeSerSocios::orderBy('id', 'desc')->paginate(5);
+        $items = BeneficiosDeSerSocios::orderBy('id', 'desc')->get();
         return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
     }
 

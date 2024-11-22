@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text("asfi_imagen")->nullable();
             $table->text('logo')->nullable();
             $table->string('celular')->nullable();
+            $table->string('telefono')->nullable();
             $table->string('direccion')->nullable();
             $table->string('email')->nullable();
             $table->decimal('latitud', 10, 8)->nullable(); // Permitir nulos

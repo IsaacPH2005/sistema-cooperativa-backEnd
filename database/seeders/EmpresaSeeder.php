@@ -31,6 +31,7 @@ Además de formar nuevos líderes entre sus mismos socios quienes se encargan de
             "logo" => null,
             "direccion" => 'Direccion de la cooperativa central',
             "celular" => '00000000',
+            'telefono' => '12345678',
             "email" => 'cooperativaLoyola@ejemplo.com',
             "latitud" => -17.39411435373686, // Cambia a null si es opcional
             "longitud" => -66.15164741349261, // Cambia a null si es opcional

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('videos_educacion_financieras', function (Blueprint $table) {
             $table->id();
-            $table->string('descripcion_del_video');
+            $table->text('descripcion_del_video');
             $table->string('portada')->nullable();
             $table->string('video');
             $table->boolean('estado')->default(true);

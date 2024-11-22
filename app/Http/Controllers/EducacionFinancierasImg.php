@@ -12,10 +12,14 @@ class EducacionFinancierasImg extends Controller
      */
     public function index()
     {
-        $items = EducacionFinancierasImagenes::orderBy('id', 'desc')->paginate(10);
+        $items = EducacionFinancierasImagenes::with(['creator', 'modifier'])->orderBy('id', 'desc')->paginate(10);
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->getCollection()->transform(function ($item) {
             $item->imagen = asset('images/educacion_financieras_imagenes/' . $item->imagen);
+            // Agregar la información del creador y modificador
+            $item->creator_name = $item->creator ? $item->creator->nombre : 'Desconocido'; // Cambia 'name' por el campo que desees mostrar
+            $item->modifier_name = $item->modifier ? $item->modifier->nombre : 'Desconocido'; // Cambia 'name' por el campo que desees mostrar
+
             return $item;
         });
         return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
@@ -41,6 +45,8 @@ class EducacionFinancierasImg extends Controller
             $imagen->move("images/educacion_financieras_imagenes/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
+        // Asignar el ID del usuario que crea el video
+        $item->created_by = auth()->id(); // Asumiendo que estás usando autenticación de Laravel
         $item->save();
         return response()->json(["mensaje" => "Imagen creada", "datos" => $item], 201);
     }
@@ -94,6 +100,9 @@ class EducacionFinancierasImg extends Controller
             $imagen->move("images/educacion_financieras_imagenes/", $nombreImagen);
             $item->imagen = $nombreImagen;
         }
+        // Asignar el ID del usuario que modifica el video
+        $item->updated_by = auth()->id(); // Asumiendo que estás usando autenticación de Laravel
+
         $item->save();
 
         // Retornar la respuesta JSON con la información actualizada

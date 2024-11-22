@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PuntoDeReclamoExport;
+use App\Models\empresa;
 use App\Models\PuntoDeReclamo;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -60,6 +61,11 @@ class PuntoDeReclamoController extends Controller
     private function generatePDFUsuario($item)
     {
         try {
+            $empresa = empresa::findOrFail(1);
+                    // Asegúrate de que la URL del logo sea accesible
+        if ($empresa->logo) {
+            $empresa->logo = asset('images/empresa/' . $empresa->logo);
+        }
             // Crear una instancia de PDF
             $pdf = app('dompdf.wrapper'); // Usa el contenedor de Laravel para obtener la instancia
 
@@ -67,7 +73,10 @@ class PuntoDeReclamoController extends Controller
             $pdf->setPaper('Legal', 'landscape'); // 'Legal' para tamaño oficio y 'landscape' para orientación horizontal
 
             // Cargar la vista para el PDF con todos los contactos
-            $pdf->loadView('pdf.Punto_de_reclamo', ['PuntoDeReclamo' => $item]);
+            $pdf->loadView('pdf.Punto_de_reclamo', [
+                'PuntoDeReclamo' => $item,
+                'logo' => $empresa->logo // Pasar el logo a la vista
+            ]);
 
             // Descargar el PDF
             return $pdf->download('PuntoDeReclamo.pdf');

@@ -71,7 +71,7 @@ class AgenciasController extends Controller
             $horas = $request->horas; // Esto ahora es un arreglo
             foreach ($dias as $key => $dia) {
                 $item2 = new HorariosAgencias();
-                $item2->agencia_id = $item->id; // Establecer la clave foránea
+                $item2->agencias_cooperativas_id = $item->id; // Establecer la clave foránea
                 $item2->dias = $dia; // Asignar el día correspondiente
                 $item2->horas = isset($horas[$key]) ? $horas[$key] : null; // Asignar la hora correspondiente
                 $item2->save(); // Guardar el registro de horarios
@@ -148,14 +148,14 @@ class AgenciasController extends Controller
 
             // Actualizar horarios
             // Primero, elimina los horarios existentes
-            HorariosAgencias::where('agencia_id', $item->id)->delete();
+            HorariosAgencias::where('agencias_cooperativas_id', $item->id)->delete();
 
             // Luego, crea nuevos registros de horarios
             $dias = $request->dias; // Asegúrate de que esto sea un array
             $horas = $request->horas; // Asegúrate de que esto sea un array
             foreach ($dias as $key => $dia) {
                 $item2 = new HorariosAgencias();
-                $item2->agencia_id = $item->id; // Set the foreign key
+                $item2->agencias_cooperativas_id = $item->id; // Set the foreign key
                 $item2->dias = $dia; // Asigna el día correspondiente
                 $item2->horas = isset($horas[$key]) ? $horas[$key] : null; // Asigna la hora correspondiente
                 $item2->save(); // Guarda el registro de horarios
