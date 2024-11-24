@@ -14,6 +14,8 @@ class PdfCalificacionDeRiesgoSeeder extends Seeder
     public function run(): void
     {
         PdfCalificacionDeRiesgos::create([
+            'titulo' => 'Calificación de Riersgo AESA 2019',
+            'imagen' => null,
             'pdf' => null
         ]);
     }

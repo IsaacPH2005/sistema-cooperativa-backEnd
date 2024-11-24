@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('pdf_calificacion_de_riesgos', function (Blueprint $table) {
             $table->id();
+            $table->string('titulo');
+            $table->string('imagen')->nullable();
             $table->string('pdf')->nullable();
             $table->timestamps();
         });

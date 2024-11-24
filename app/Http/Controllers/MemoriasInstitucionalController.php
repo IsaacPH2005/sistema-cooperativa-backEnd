@@ -16,7 +16,12 @@ class MemoriasInstitucionalController extends Controller
         $items = $items->orderBy("id", "desc")->paginate(15);
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->getCollection()->transform(function ($item) {
-            $item->imagen = asset('images/memorias_institucionales/' . $item->imagen);
+            if (!empty($item->imagen)) {
+                $item->imagen = asset('images/memorias_institucionales/' . $item->imagen);
+            } else {
+                // Asignar una imagen por defecto usando asset
+                $item->imagen = asset('imagenes_por_defecto/pdf.png'); // Cambia la ruta según sea necesario
+            }
             $item->pdf = asset('pdfs/memorias_institucionales/' . $item->pdf);
             return $item;
         });
@@ -77,8 +82,13 @@ class MemoriasInstitucionalController extends Controller
         if (!$item) {
             return response()->json(["mensaje" => "Registro no encontrado"], 404);
         }
-        // Agregar las URLs de la imagen y el PDF
-        $item->imagen = asset('images/memorias_institucionales/' . $item->imagen);
+           // Agregar la URL de la imagen o una imagen por defecto
+           if (!empty($item->imagen)) {
+            $item->imagen = asset('images/memorias_institucionales/' . $item->imagen);
+        } else {
+            // Asignar una imagen por defecto usando asset
+            $item->imagen = asset('imagenes_por_defecto/pdf.png'); // Cambia la ruta según sea necesario
+        }
         $item->pdf = asset('pdfs/memorias_institucionales/' . $item->pdf);
 
         // Retornar la respuesta JSON con el registro encontrado
@@ -158,7 +168,12 @@ class MemoriasInstitucionalController extends Controller
         $items = memorias_institucionales::where('estado', true)->get();
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->transform(function ($item) {
-            $item->imagen = asset('images/memorias_institucionales/' . $item->imagen);
+            if (!empty($item->imagen)) {
+                $item->imagen = asset('images/memorias_institucionales/' . $item->imagen);
+            } else {
+                // Asignar una imagen por defecto usando asset
+                $item->imagen = asset('imagenes_por_defecto/pdf.png'); // Cambia la ruta según sea necesario
+            }
             $item->pdf = asset('pdfs/memorias_institucionales/' . $item->pdf);
             return $item;
         });

@@ -15,8 +15,14 @@ class ResponsabilidadSocialController extends Controller
         $items = ResponsabilidadSocial::orderBy('id', 'desc')->paginate(10);
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->getCollection()->transform(function ($item) {
-            $item->imagen_pdf = asset('images/responsabilidad_sociales/' . $item->imagen_pdf);
-            $item->pdf = asset('pdfs/responsabilidad_sociales/' . $item->pdf);
+            if (!empty($item->imagen_pdf)) {
+                $item->imagen_pdf = asset('images/licitacion_publica/' . $item->imagen_pdf);
+            } else {
+                // Asignar una imagen por defecto usando asset
+                $item->imagen_pdf = asset('imagenes_por_defecto/pdf.png'); // Cambia la ruta según sea necesario
+            }
+            $item->pdf_1 = asset('pdfs/responsabilidad_sociales/' . $item->pdf_1);
+            $item->pdf_2 = asset('pdfs/responsabilidad_sociales/' . $item->pdf_2);
             return $item;
         });
         return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
@@ -91,7 +97,12 @@ class ResponsabilidadSocialController extends Controller
             return response()->json(['mensaje' => "No se encontró el registro"], 404);
         }
         // Agregar las URLs de la imagen y el PDF
-        $item->imagen_pdf = asset('images/responsabilidad_sociales/' . $item->imagen_pdf);
+        if (!empty($item->imagen_pdf)) {
+            $item->imagen_pdf = asset('images/responsabilidad_sociales/' . $item->imagen_pdf);
+        } else {
+            // Asignar una imagen por defecto usando asset
+            $item->imagen_pdf = asset('imagenes_por_defecto/pdf.png'); // Cambia la ruta según sea necesario
+        }
         $item->pdf_1 = asset('pdfs/responsabilidad_sociales/' . $item->pdf_1);
         $item->pdf_2 = asset('pdfs/responsabilidad_sociales/' . $item->pdf_2);
         // Retornar la respuesta JSON con la información del registro
@@ -187,7 +198,12 @@ class ResponsabilidadSocialController extends Controller
         $items = ResponsabilidadSocial::where('estado', true)->get();
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->transform(function ($item) {
-            $item->imagen_pdf = asset('images/responsabilidad_sociales/' . $item->imagen_pdf);
+            if (!empty($item->imagen_pdf)) {
+                $item->imagen_pdf = asset('images/licitacion_publica/' . $item->imagen_pdf);
+            } else {
+                // Asignar una imagen por defecto usando asset
+                $item->imagen_pdf = asset('imagenes_por_defecto/pdf.png'); // Cambia la ruta según sea necesario
+            }
             $item->pdf_1 = asset('pdfs/responsabilidad_sociales/' . $item->pdf_1);
             $item->pdf_2 = asset('pdfs/responsabilidad_sociales/' . $item->pdf_2);
             return $item;

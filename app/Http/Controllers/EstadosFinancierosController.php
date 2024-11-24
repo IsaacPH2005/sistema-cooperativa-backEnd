@@ -23,7 +23,12 @@ class EstadosFinancierosController extends Controller
         $items = $items->orderBy("id", "desc")->paginate(15);
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->getCollection()->transform(function ($item) {
-            $item->imagen = asset('images/estados_financieros/' . $item->imagen);
+            if (!empty($item->imagen)) {
+                $item->imagen = asset('images/estados_financieros/' . $item->imagen);
+            } else {
+                // Asignar una imagen por defecto usando asset
+                $item->imagen = asset('imagenes_por_defecto/pdf.png'); // Cambia la ruta según sea necesario
+            }
             $item->pdf = asset('pdfs/estados_financieros/' . $item->pdf);
             return $item;
         });
@@ -44,7 +49,7 @@ class EstadosFinancierosController extends Controller
 
         $item = new estados_financieros();
         $item->titulo = $request->titulo;
-        $item->fecha = date('Y-m-d', strtotime($request->input('fecha')));
+        $item->fecha = $request->fecha;
         $item->descripcion = $request->input('descripcion');
 
         if ($request->file('imagen')) {
@@ -83,8 +88,13 @@ class EstadosFinancierosController extends Controller
         if (!$item) {
             return response()->json(["mensaje" => "Registro no encontrado"], 404);
         }
-        // Agregar las URLs de la imagen y el PDF
-        $item->imagen = asset('images/estados_financieros/' . $item->imagen);
+         // Agregar la URL de la imagen o una imagen por defecto
+         if (!empty($item->imagen)) {
+            $item->imagen = asset('images/estados_financieros/' . $item->imagen);
+        } else {
+            // Asignar una imagen por defecto usando asset
+            $item->imagen = asset('imagenes_por_defecto/pdf.png'); // Cambia la ruta según sea necesario
+        }
         $item->pdf = asset('pdfs/estados_financieros/' . $item->pdf);
 
         // Retornar la respuesta JSON con el registro encontrado
@@ -169,7 +179,12 @@ class EstadosFinancierosController extends Controller
         $items = estados_financieros::where('estado', true)->get();
         // Mapear los items para agregar las URLs de las imágenes y PDFs
         $items->transform(function ($item) {
-            $item->imagen = asset('images/estados_financieros/' . $item->imagen);
+            if (!empty($item->imagen)) {
+                $item->imagen = asset('images/estados_financieros/' . $item->imagen);
+            } else {
+                // Asignar una imagen por defecto usando asset
+                $item->imagen = asset('imagenes_por_defecto/pdf.png'); // Cambia la ruta según sea necesario
+            }
             $item->pdf = asset('pdfs/estados_financieros/' . $item->pdf);
             return $item;
         });
