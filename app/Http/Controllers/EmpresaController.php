@@ -139,6 +139,7 @@ class EmpresaController extends Controller
             $empresa->aspecto_legal = $request->aspecto_legal;
             $empresa->direccion = $request->direccion;
             $empresa->celular = $request->celular;
+            $empresa->telefono = $request->telefono;
             $empresa->email = $request->email;
             $empresa->latitud = $request->latitud;
             $empresa->longitud = $request->longitud;

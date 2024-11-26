@@ -28,7 +28,7 @@ class PuntoDeReclamoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'fecha_del_hecho' => 'required|date|before_or_equal:today',
+            'fecha_del_hecho' => 'required|date',
             'agencia' => 'required',
             'descripcion' => 'required',
             'tipo_persona' => 'required',
@@ -132,7 +132,7 @@ class PuntoDeReclamoController extends Controller
     {
         // Validar los datos de entrada
         $request->validate([
-            'fecha_del_hecho' => 'required|date|before_or_equal:today',
+            'fecha_del_hecho' => 'required|date',
             'agencia' => 'required',
             'descripcion' => 'required',
             'tipo_persona' => 'required',

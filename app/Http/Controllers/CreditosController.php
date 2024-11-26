@@ -154,8 +154,8 @@ class CreditosController extends Controller
         $item = creditos::findOrFail($id);
 
         // Actualizar solo los campos que están presentes en la solicitud
-        $item->nombre = $request->input('nombre', $item->nombre);
-        $item->descripcion = $request->input('descripcion', $item->descripcion);
+        $item->nombre = $request->nombre;
+        $item->descripcion = $request->descripcion;
 
         // Manejar la imagen
         if ($request->file('imagen')) {

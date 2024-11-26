@@ -37,7 +37,7 @@ class MemoriasInstitucionalController extends Controller
             "titulo" => 'required|string|max:255',
             "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:20480',
             'pdf' => 'required|mimes:pdf|max:40960',
-            'fecha' => 'nullable|date|after:today', // La fecha debe ser después de hoy
+            'fecha' => 'nullable|date', // La fecha debe ser después de hoy
             "descripcion" => 'nullable|string',
         ]);
 
@@ -102,7 +102,7 @@ class MemoriasInstitucionalController extends Controller
         "imagen" => 'nullable|mimes:jpg,png,jpeg,gif,svg|max:20480',
         "pdf" => 'nullable|mimes:pdf|max:40960',
         "descripcion" => 'nullable|string',
-        'fecha' => 'nullable|date|after:today', // La fecha debe ser después de hoy
+        'fecha' => 'nullable|date', // La fecha debe ser después de hoy
     ]);
 
     // Buscar el registro por ID
