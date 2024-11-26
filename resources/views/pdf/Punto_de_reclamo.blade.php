@@ -30,7 +30,7 @@
 </head>
 <body>
     <div class="logo">
-        <img src="{{$logo}}" alt="Logo" width="300" height="300"> <!-- Ajusta el tamaño según sea necesario -->
+        <img src="{{$logo}}" alt="Logo" width="200" height="200"> <!-- Ajusta el tamaño según sea necesario -->
     </div>
     <div class="content">
         <h1>Punto de Reclamo {{ $PuntoDeReclamo->pr_web}} {{$PuntoDeReclamo->id}}</h1>
@@ -81,6 +81,9 @@
             </tr>
             <!-- Agrega más campos según sea necesario -->
         </table>
+        <span>
+            «En el plazo de cinco (5) días hábiles administrativos a partir del día de mañana, usted recibirá la carta de respuesta a su reclamo a través del medio que haya requerido o puede apersonarse por la Entidad Financiera a recoger su respuesta»
+        </span>
     </div>
 </body>
 </html>

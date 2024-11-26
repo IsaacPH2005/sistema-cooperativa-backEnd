@@ -13,15 +13,6 @@ class ValoresFundamentalesController extends Controller
     public function index()
     {
         $items = ValoresFundamentales::orderBy('id', 'desc')->paginate(5);
-        $items->transform(function ($item) {
-            // Verificar si la imagen existe y no está vacía
-            if (!empty($item->imagen)) {
-                $item->imagen = asset('images/valores_fundamentales/' . $item->imagen);
-            } else {
-                $item->imagen = null; // O puedes omitir esta línea si no quieres incluir la propiedad
-            }
-            return $item;
-        });
         return response()->json(["mensaje" => "Datos cargados", "datos" => $items], 200);
     }
 
@@ -33,26 +24,11 @@ class ValoresFundamentalesController extends Controller
         $request->validate([
             "titulo" => "required",
             "descripcion" => "nullable",
-            "imagen" => "nullable|image|mimes:jpeg,png,jpg|max:20480",
         ]);
 
         $item = new ValoresFundamentales();
         $item->titulo = $request->titulo;
         $item->descripcion = $request->descripcion;
-        if ($request->file('imagen')) {
-            // Verificar si hay una foto existente antes de guardar la nueva
-            if ($item->exists && $item->imagen) {
-                $existingImagePath = 'images/valores_fundamentales/' . $item->imagen;
-                if (file_exists($existingImagePath)) {
-                    unlink($existingImagePath);
-                }
-            }
-
-            $imagen = $request->file('imagen');
-            $nombreImagen = time() . '.' . $imagen->getClientOriginalExtension(); // Usar la extensión original
-            $imagen->move("images/valores_fundamentales/", $nombreImagen);
-            $item->imagen = $nombreImagen;
-        }
         $item->save();
         return response()->json(["mensaje" => "Registro creado", "datos" => $item], 201);
     }
@@ -65,9 +41,6 @@ class ValoresFundamentalesController extends Controller
         if (!$item) {
             return response()->json(["mensaje" => "Registro no encontrado"], 404);
         }
-        // Agregar las URLs de la imagen y el PDF
-        $item->imagen = asset('images/valores_fundamentales/' . $item->imagen);
-
         // Retornar la respuesta JSON con el registro encontrado
         return response()->json(["mensaje" => "Registro encontrado", "datos" => $item], 200);
     }
@@ -88,20 +61,6 @@ class ValoresFundamentalesController extends Controller
         ]);
         $item->titulo = $request->titulo;
         $item->descripcion = $request->descripcion;
-        if ($request->file('imagen')) {
-            // Verificar si hay una foto existente antes de guardar la nueva
-            if ($item->imagen) {
-                $existingImagePath = 'images/valores_fundamentales/' . $item->imagen;
-                if (file_exists($existingImagePath)) {
-                    unlink($existingImagePath);
-                }
-            }
-
-            $imagen = $request->file('imagen');
-            $nombreImagen = md5_file($imagen->getPathname()) . '.' . $imagen->getClientOriginalExtension();
-            $imagen->move("images/valores_fundamentales/", $nombreImagen);
-            $item->imagen = $nombreImagen;
-        }
         $item->save();
 
         return response()->json(["mensaje" => "Servicio actualizado con éxito", "datos" => $item]);
@@ -122,16 +81,7 @@ class ValoresFundamentalesController extends Controller
     }
     public function indexActivos()
     {
-        $items = ValoresFundamentales::where('estado', true)->get();
-        $items->transform(function ($item) {
-            // Verificar si la imagen existe y no está vacía
-            if (!empty($item->imagen)) {
-                $item->imagen = asset('images/valores_fundamentales/' . $item->imagen);
-            } else {
-                $item->imagen = null; // O puedes omitir esta línea si no quieres incluir la propiedad
-            }
-            return $item;
-        });
+        $items = ValoresFundamentales::where('estado', true)->orderBy('id', 'desc')->get();
         return response()->json(["mensaje" => "Datos activos cargados", "datos" => $items]);
     }
 }

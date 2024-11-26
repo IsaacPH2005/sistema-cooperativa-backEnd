@@ -24,6 +24,7 @@ use App\Http\Controllers\EducacionFinancierasImg;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstadosFinancierosController;
 use App\Http\Controllers\ImagensInmueblesController;
+use App\Http\Controllers\ImagenValoresController;
 use App\Http\Controllers\IndicadoresFinancierosController;
 use App\Http\Controllers\InformacionImportanteController;
 use App\Http\Controllers\InfoSerSocioController;
@@ -49,6 +50,7 @@ use App\Http\Controllers\TransferenciasElectronicasController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValoresFundamentalesController;
 use App\Http\Controllers\VideoEducacionFinancieraController;
+use App\Http\Controllers\VideosRecomendacionesSeguridadController;
 use App\Http\Controllers\VigilanciaController;
 use App\Models\CaracteristicasDpf;
 use Illuminate\Http\Request;
@@ -330,7 +332,15 @@ Route::group(["middleware" => "auth:sanctum"], function () {
   //informacionImportante img
   Route::get('/info-importante', [InformacionImportanteController::class, 'index']);
   Route::post('/info-importante/edicion', [InformacionImportanteController::class, 'update']);
-
+  // *************  recomendaciones videos  **********
+  Route::get('/recomendaciones-de-seguridad-video', [VideosRecomendacionesSeguridadController::class, 'index']);
+  Route::post('/recomendaciones-de-seguridad-video-nuevo', [VideosRecomendacionesSeguridadController::class, 'store']);
+  Route::get('/recomendaciones-de-seguridad-video/{id}', [VideosRecomendacionesSeguridadController::class, 'show']);
+  Route::put('/recomendaciones-de-seguridad-video/{id}', [VideosRecomendacionesSeguridadController::class, 'update']);
+  Route::delete('/recomendaciones-de-seguridad-video/{id}', [VideosRecomendacionesSeguridadController::class, 'destroy']);
+    //informacionImportante img
+    Route::get('/img-valores', [ImagenValoresController::class, 'index']);
+    Route::post('/img-valores/edicion', [ImagenValoresController::class, 'update']);
   Route::get('/user', [UserController::class, 'showAuthenticatedUser']); // Para mostrar los datos del usuario
   Route::put('/user', [UserController::class, 'update']); // Para actualizar los datos del usuario
 });
@@ -421,6 +431,10 @@ Route::get('/calificacion-de-riesgo-activo', [PdfCalificacionDeRiesgoController:
 Route::get('/calificacion-de-riesgo-tabla-activo', [TablaCalificacionDeRiesgoController::class, 'index2']);
 // info importante activo
 Route::get('/info-importante-activo', [InformacionImportanteController::class, 'index2']);
+// recomendaciones videos
+Route::get('/recomendaciones-de-seguridad-video-activos', [VideosRecomendacionesSeguridadController::class, 'indexActivos']);
+//imaagen de valores activo
+Route::get('/img-valores-activo', [ImagenValoresController::class, 'index2']);
 Route::get('/dpf-card-activo', [DpfCardController::class, 'index2']);
 Route::get('/principios-text', [PrincipiosTextController::class, 'lecturaitem']);
 

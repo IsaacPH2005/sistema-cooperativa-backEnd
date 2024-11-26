@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('valores_fundamentales', function (Blueprint $table) {
+        Schema::create('videos_recomendaaciones', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
-            $table->string('descripcion')->nullable();
+            $table->text('descripcion_del_video');
+            $table->string('portada')->nullable();
+            $table->string('video');
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('valores_fundamentales');
+        Schema::dropIfExists('videos_recomendaaciones');
     }
 };

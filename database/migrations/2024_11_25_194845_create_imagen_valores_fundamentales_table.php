@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('valores_fundamentales', function (Blueprint $table) {
+        Schema::create('imagen_valores_fundamentales', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
-            $table->string('descripcion')->nullable();
-            $table->boolean('estado')->default(true);
+            $table->string('nombre_de_la_imagen');
+            $table->string('imagen')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('valores_fundamentales');
+        Schema::dropIfExists('imagen_valores_fundamentales');
     }
 };
